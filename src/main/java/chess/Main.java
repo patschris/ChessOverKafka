@@ -9,6 +9,7 @@ public class Main {
     /** Opens and begins a new game of chess. */
     public static void main(String... dummy) {
         new Game();
+        System.out.println("aoua");
     }
 
 }
