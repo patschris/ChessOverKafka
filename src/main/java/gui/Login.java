@@ -66,7 +66,7 @@ public class Login extends JFrame {
 		title=new JLabel("Chess Over Kafka");
 		title.setSize(400, 50);
 		title.setLocation(300, 15);
-		getContentPane().add(title);
+		add(title);
 	}
 	
 	/**
@@ -81,8 +81,8 @@ public class Login extends JFrame {
 		userfield.setColumns(100);			//	adds a username text field		
 		userfield.setSize(400, 30);		//	sets its size and location
 		userfield.setLocation(200, 80);	//
-		getContentPane().add(username);	//	adds username label and field
-		getContentPane().add(userfield);	//	to this window
+		add(username);	//	adds username label and field
+		add(userfield);	//	to this window
 	}
 
 	/**
@@ -97,8 +97,8 @@ public class Login extends JFrame {
 		passfield.setColumns(100);			//	adds password field
 		passfield.setSize(400, 30);		//	sets its size and location
 		passfield.setLocation(200, 130);	
-		getContentPane().add(password);	//	adds password label and
-		getContentPane().add(passfield);	//	password field to this window
+		add(password);	//	adds password label and
+		add(passfield);	//	password field to this window
 	}
 
 	/**
@@ -115,8 +115,8 @@ public class Login extends JFrame {
 		submitButton.setLocation(400, 180);
 		submitButton.setActionCommand("Login");	// sets action command for Sumbit button
 		submitButton.addActionListener(new LoginListeners());	// sets listener for Submit button
-		getContentPane().add(cancelButton);	//
-		getContentPane().add(submitButton);	// adds Cancel and Sumbit buttons to this window
+		add(cancelButton);	//
+		add(submitButton);	// adds Cancel and Sumbit buttons to this window
 	}
 	
 	private void addRegistrationLink() {
@@ -125,7 +125,7 @@ public class Login extends JFrame {
 		register.setSize(200,30);
 		register.setLocation(300, 230);
 		register.addMouseListener(new RegisterListener());
-		getContentPane().add(register);
+		add(register);
 	}
 	
 	/**
@@ -165,8 +165,9 @@ public class Login extends JFrame {
 	
 		@Override
 		public void keyPressed(KeyEvent keyEvent) {
-			if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER)
+			if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
 				enterPressed();
+			}
 		}
 
 		@Override
@@ -184,10 +185,12 @@ public class Login extends JFrame {
 		
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
-			if (actionEvent.getActionCommand().equals("Login"))
+			if (actionEvent.getActionCommand().equals("Login")) {
 				enterPressed();
-			else
+			}
+			else {
 				clear();
+			}
 		}
 		
 	}
@@ -213,9 +216,7 @@ public class Login extends JFrame {
 		}
 
 		@Override
-		public void mousePressed(MouseEvent mouseEvent) {
-			
-		}
+		public void mousePressed(MouseEvent mouseEvent) {}
 
 		@Override
 		public void mouseReleased(MouseEvent mouseEvent) {

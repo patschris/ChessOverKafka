@@ -70,7 +70,7 @@ public class Register extends JFrame {
 		title=new JLabel("Register to use app");
 		title.setSize(400, 50);
 		title.setLocation(300, 15);
-		getContentPane().add(title);
+		add(title);
 	}
 	
 	/**
@@ -85,8 +85,8 @@ public class Register extends JFrame {
 		userfield.setColumns(100);			//	adds a username text field		
 		userfield.setSize(400, 30);		//	sets its size and location
 		userfield.setLocation(200, 80);	//
-		getContentPane().add(username);	//	adds username label and field
-		getContentPane().add(userfield);	//	to this window
+		add(username);	//	adds username label and field
+		add(userfield);	//	to this window
 	}
 	
 	/**
@@ -101,8 +101,8 @@ public class Register extends JFrame {
 		passfield.setColumns(100);			//	adds password field
 		passfield.setSize(400, 30);		//	sets its size and location
 		passfield.setLocation(200, 120);	
-		getContentPane().add(password);	//	adds password label and
-		getContentPane().add(passfield);	//	password field to this window
+		add(password);	//	adds password label and
+		add(passfield);	//	password field to this window
 	}
 
 	/**
@@ -117,8 +117,8 @@ public class Register extends JFrame {
 		repeatPassfield.setColumns(100);			//	adds password field
 		repeatPassfield.setSize(400, 30);		//	sets its size and location
 		repeatPassfield.setLocation(200, 160);	
-		getContentPane().add(repeatPassword);	//	adds password label and
-		getContentPane().add(repeatPassfield);	//	password field to this window
+		add(repeatPassword);	//	adds password label and
+		add(repeatPassfield);	//	password field to this window
 	}
 	
 	/**
@@ -141,9 +141,9 @@ public class Register extends JFrame {
 		backButton.setActionCommand("Back");	// sets action command for Back button
 		backButton.addActionListener(new RegisterListeners());	// sets listener for Back button
 		
-		getContentPane().add(clearButton);
-		getContentPane().add(registerButton);	
-		getContentPane().add(backButton); // adds Cancel and Sumbit buttons to this window
+		add(clearButton);
+		add(registerButton);
+		add(backButton); // adds Cancel and Sumbit buttons to this window
 		
 
 	}
@@ -224,9 +224,7 @@ public class Register extends JFrame {
 				clear();
 			else
 				back();
-			
 		}
-		
 	}
 	
 }
