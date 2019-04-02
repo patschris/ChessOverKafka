@@ -1,21 +1,22 @@
 package gui;
 
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
+import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 
 public class Table  extends JFrame {
 
     private JLabel title;
+    private JLabel subtitle;
     private JComboBox<String> dropdown;
+    protected JLabel gifLabel;
+    private JButton clearButton;
+    private JButton submitButton;
 
     public Table() {
         super("Table");
@@ -24,6 +25,12 @@ public class Table  extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	// close operation
         addTitle();
         createDropDown();
+
+
+        createSubtitle();
+        addImageLabel();
+
+
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent){
                 // program ends if Login window is closed
@@ -56,6 +63,25 @@ public class Table  extends JFrame {
         add(dropdown);
     }
 
+    private void createSubtitle (){
+        subtitle=new JLabel();
+        subtitle.setSize(300, 50);
+        subtitle.setLocation(100, 50);
+        add(subtitle);
+    }
+
+    private void addImageLabel() {
+        URL url = this.getClass().getResource("/chess/images/gui/loading.gif");
+        Icon loadingGif = new ImageIcon(url);
+        gifLabel = new JLabel(loadingGif);
+        gifLabel.setSize(100, 50);
+        gifLabel.setLocation(280, 100);
+        add(gifLabel);
+        gifLabel.setVisible(false);
+    }
+
+
+
     /**
      * Listener for Register and Clear buttons.
      * http://www.tutorialspoint.com/swing/swing_event_handling.htm
@@ -68,16 +94,59 @@ public class Table  extends JFrame {
             String selectedOption = (String) combo.getSelectedItem();
 
             if (selectedOption.equals("<html><b><i>Select Option</i></b></html>")) {
-                System.out.println("- Select Option -");
+                OnNoOptionSelected();
             }
             else if (selectedOption.equals("Create table")) {
-                System.out.println("Create table");
+                OnCreateTableSelected();
             }
             else {
-                System.out.println("Join table");
+                OnJoinTableSelected();
             }
 
         }
 
+        private void OnNoOptionSelected(){
+            System.out.println("Select Option");
+            gifLabel.setVisible(false);
+            subtitle.setText("");
+        }
+
+        private void OnCreateTableSelected(){
+            System.out.println("Create table");
+            subtitle.setText("Wait for an opponent");
+            gifLabel.setVisible(true);
+            new SwingWorker<Void, Void>() {
+                protected Void doInBackground() throws Exception {
+                    System.out.println("Swing Worker do In Background");
+                    Thread.sleep(5000);
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    System.out.println("Swing Worker done");
+
+                }
+            }.execute();
+        }
+
+        private void OnJoinTableSelected(){
+            System.out.println("Join table");
+            subtitle.setText("Select an opponent");
+            gifLabel.setVisible(false);
+            new SwingWorker<Void, Void>() {
+                protected Void doInBackground() throws Exception {
+                    System.out.println("Swing Worker do In Background");
+                    Thread.sleep(5000);
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    System.out.println("Swing Worker done");
+
+                }
+            }.execute();
+        }
     }
 }
