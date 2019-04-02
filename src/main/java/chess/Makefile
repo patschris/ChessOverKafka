@@ -1,3 +1,0 @@
-
-default:
-	javac -g *.java
