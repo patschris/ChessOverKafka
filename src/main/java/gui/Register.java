@@ -39,6 +39,7 @@ public class Register extends JFrame {
 	private JButton registerButton;
 	private JButton backButton;
 
+
 	public Register() {
 		super("Register");
 		setSize(700,300);	// size of register window
