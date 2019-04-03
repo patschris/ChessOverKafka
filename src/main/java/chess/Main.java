@@ -1,7 +1,5 @@
 package chess;
 
-import gui.Table;
-
 /** Main class of the Chess program.
  * @author Wan Fung Chui
  */

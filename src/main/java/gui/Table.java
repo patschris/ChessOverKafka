@@ -1,5 +1,9 @@
 package gui;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import security.SecurePassword;
+
 import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -14,7 +18,10 @@ public class Table  extends JFrame {
     private JLabel title;
     private JLabel subtitle;
     private JComboBox<String> dropdown;
-    protected JLabel gifLabel;
+    private JLabel gifLabel;
+    private DefaultListModel model;
+    private JList list;
+    private JScrollPane scrollPane;
     private JButton clearButton;
     private JButton submitButton;
 
@@ -26,10 +33,10 @@ public class Table  extends JFrame {
         addTitle();
         createDropDown();
 
-
         createSubtitle();
         addImageLabel();
-
+        addList();
+        addButtons();
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent){
@@ -66,7 +73,7 @@ public class Table  extends JFrame {
     private void createSubtitle (){
         subtitle=new JLabel();
         subtitle.setSize(300, 50);
-        subtitle.setLocation(100, 50);
+        subtitle.setLocation(270, 50);
         add(subtitle);
     }
 
@@ -80,12 +87,48 @@ public class Table  extends JFrame {
         gifLabel.setVisible(false);
     }
 
+    private void addList(){
+        model = new DefaultListModel();
+
+        /*
+         * xtupame na paroume antipalous
+         * theloume kai kapws na einai interactive
+         */
+
+        model.addElement("Christos");
+        model.addElement("Giorgos");
+        model.addElement("Thanos");
 
 
-    /**
-     * Listener for Register and Clear buttons.
-     * http://www.tutorialspoint.com/swing/swing_event_handling.htm
-     */
+        list = new JList(model);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        scrollPane = new JScrollPane(list);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBounds(100, 90, 450, 120);
+        add(scrollPane);
+        scrollPane.setVisible(false);
+    }
+
+    private void addButtons(){
+        clearButton= new JButton("Clear");		//	creates Clear button,
+        clearButton.setSize(100, 30);		//	sets its size and location
+        clearButton.setLocation(220, 235);
+        clearButton.setActionCommand("Clear");	// sets action command for Cancel button
+        clearButton.addActionListener(new ButtonPressedListener(this));	// sets listener for Cancel button
+        submitButton = new JButton("Play");		// 	creates Login button
+        submitButton.setSize(100, 30);
+        submitButton.setLocation(350, 235);
+        submitButton.setActionCommand("Play");	// sets action command for Sumbit button
+        submitButton.addActionListener(new ButtonPressedListener(this));	// sets listener for Submit button
+        add(clearButton);	//
+        add(submitButton);	// adds Cancel and Sumbit buttons to this window
+        clearButton.setVisible(false);
+        submitButton.setVisible(false);
+    }
+
+
     private class DropDownListener implements ActionListener {
 
         @Override
@@ -102,51 +145,84 @@ public class Table  extends JFrame {
             else {
                 OnJoinTableSelected();
             }
-
         }
 
         private void OnNoOptionSelected(){
-            System.out.println("Select Option");
             gifLabel.setVisible(false);
+            scrollPane.setVisible(false);
+            clearButton.setVisible(false);
+            submitButton.setVisible(false);
             subtitle.setText("");
         }
 
         private void OnCreateTableSelected(){
-            System.out.println("Create table");
             subtitle.setText("Wait for an opponent");
             gifLabel.setVisible(true);
+            scrollPane.setVisible(false);
+            clearButton.setVisible(false);
+            submitButton.setVisible(false);
             new SwingWorker<Void, Void>() {
                 protected Void doInBackground() throws Exception {
-                    System.out.println("Swing Worker do In Background");
                     Thread.sleep(5000);
                     return null;
                 }
 
                 @Override
                 protected void done() {
-                    System.out.println("Swing Worker done");
 
                 }
             }.execute();
         }
 
         private void OnJoinTableSelected(){
-            System.out.println("Join table");
             subtitle.setText("Select an opponent");
             gifLabel.setVisible(false);
+            scrollPane.setVisible(true);
+            clearButton.setVisible(true);
+            submitButton.setVisible(true);
             new SwingWorker<Void, Void>() {
                 protected Void doInBackground() throws Exception {
-                    System.out.println("Swing Worker do In Background");
                     Thread.sleep(5000);
                     return null;
                 }
 
                 @Override
                 protected void done() {
-                    System.out.println("Swing Worker done");
 
                 }
             }.execute();
         }
+    }
+
+    private class ButtonPressedListener implements ActionListener {
+
+        private Table window;
+
+        ButtonPressedListener (Table table) {
+            this.window = table;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            if (actionEvent.getActionCommand().equals("Play")) {
+                String name = (String) list.getSelectedValue();
+                if (name==null) {
+                    JOptionPane.showMessageDialog(this.window,
+                            "No opponent selected");
+                }
+                else {
+                    ObjectNode objectNode = new ObjectMapper().createObjectNode();
+                    objectNode.put("username", name);
+                    System.out.println(objectNode.toString());
+
+                    // perimene apantisi gia syndesi kai arxise neo paixnidi
+
+                }
+            }
+            else {
+                list.clearSelection();
+            }
+        }
+
     }
 }
