@@ -144,7 +144,6 @@ public class Login extends JFrame {
 	 * Code executed when enter pressed or when Login button pressed
 	 */
 	private void enterPressed () {
-		boolean flag = false;
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
 		objectNode.put("username", userfield.getText());
 		objectNode.put("password", SecurePassword.sha256(passfield.getText()));
@@ -171,11 +170,6 @@ public class Login extends JFrame {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-		}
-
-
-		if (flag) {
-			System.out.println("Have to open the game");
 		}
 	}
 	
