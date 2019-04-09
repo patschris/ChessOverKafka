@@ -31,7 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
@@ -145,7 +144,7 @@ public class Login extends JFrame {
 	 */
 	private void enterPressed () {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
-		objectNode.put("username", userfield.getText());
+		objectNode.put("name", userfield.getText());
 		objectNode.put("password", SecurePassword.sha256(passfield.getText()));
 		System.out.println(objectNode.toString());
 		clear();
@@ -156,7 +155,7 @@ public class Login extends JFrame {
 			WebResource webResource = Client.create().resource(restAddress + "/login");
 			ClientResponse response = webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
 			System.out.println(response.getStatus());
-			System.out.println(response.getEntity(String.class));
+			//System.out.println(response.getEntity(String.class));
 			if (response.getStatus() == 200) {
 				dispose();
 				new Table();

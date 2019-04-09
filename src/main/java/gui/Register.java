@@ -8,6 +8,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,6 +24,9 @@ import javax.swing.JTextField;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 import security.SecurePassword;
 
 
@@ -82,7 +90,7 @@ public class Register extends JFrame {
 		username.setLocation(60,55);		//	location
 		userfield=new JTextField();		//	adds text field for username
 		userfield.addKeyListener(new KeyboardListener());	// sets a keylistener for enter
-		userfield.setColumns(100);			//	adds a username text field		
+		userfield.setColumns(100);			//	adds a username text field
 		userfield.setSize(400, 30);		//	sets its size and location
 		userfield.setLocation(200, 80);	//
 		add(username);	//	adds username label and field
@@ -100,7 +108,7 @@ public class Register extends JFrame {
 		passfield.addKeyListener(new KeyboardListener());	// adds key listener for enter
 		passfield.setColumns(100);			//	adds password field
 		passfield.setSize(400, 30);		//	sets its size and location
-		passfield.setLocation(200, 120);	
+		passfield.setLocation(200, 120);
 		add(password);	//	adds password label and
 		add(passfield);	//	password field to this window
 	}
@@ -116,7 +124,7 @@ public class Register extends JFrame {
 		repeatPassfield.addKeyListener(new KeyboardListener());	// adds key listener for enter
 		repeatPassfield.setColumns(100);			//	adds password field
 		repeatPassfield.setSize(400, 30);		//	sets its size and location
-		repeatPassfield.setLocation(200, 160);	
+		repeatPassfield.setLocation(200, 160);
 		add(repeatPassword);	//	adds password label and
 		add(repeatPassfield);	//	password field to this window
 	}
@@ -140,11 +148,11 @@ public class Register extends JFrame {
 		backButton.setLocation(60, 220);
 		backButton.setActionCommand("Back");	// sets action command for Back button
 		backButton.addActionListener(new RegisterListeners());	// sets listener for Back button
-		
+
 		add(clearButton);
 		add(registerButton);
 		add(backButton); // adds Cancel and Sumbit buttons to this window
-		
+
 
 	}
 	
@@ -152,25 +160,42 @@ public class Register extends JFrame {
 	 * Code executed when enter pressed or when Login button pressed
 	 */
 	private void enterPressed () {
-		
-		if (!passfield.getText().equals(repeatPassfield.getText())) {
+
+		if (userfield.getText().isEmpty()) {
+			clear();
+			JOptionPane.showMessageDialog(this, "Username connot be empty\nPlease try again");
+		}
+		else if (!passfield.getText().equals(repeatPassfield.getText())) {
 			clear();
 			JOptionPane.showMessageDialog(this, "Passwords need to match\nPlease try again");
 		}
 		else {
 	        ObjectNode objectNode = new ObjectMapper().createObjectNode();
-			objectNode.put("username", userfield.getText());
-			objectNode.put("password", SecurePassword.sha256(passfield.getText()));
-			// Steile, tsekare an uparxei to username kai bale to apotelesma sto flag
+			objectNode.put("name", userfield.getText());
+			objectNode.put("password",  SecurePassword.sha256(passfield.getText()));
+			System.out.println(objectNode.toString());
 			clear();
-			boolean flag = false;
-			if (!flag) {
-				JOptionPane.showMessageDialog(this, "Registration succeeded\nPlease try again");
-				back();
+			try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
+				Properties properties = new Properties();
+				properties.load(fileInput);
+				final String restAddress = properties.getProperty("restAddress");
+				WebResource webResource = Client.create().resource(restAddress + "/register");
+				ClientResponse response = webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
+				System.out.println(response.getStatus());
+				System.out.println(response.getEntity(String.class));
+				if (response.getStatus() == 200) {
+					JOptionPane.showMessageDialog(this, "Registration succeeded");
+					back();
+				}
+				else {
+					JOptionPane.showMessageDialog(this, "Username already exists\nPlease try again");
+				}
 			}
-			else {
-				// show message in case of invalid credentials
-				JOptionPane.showMessageDialog(this, "Username already exists\nPlease try again");
+			catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
