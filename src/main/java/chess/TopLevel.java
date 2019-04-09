@@ -13,17 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
+import javax.swing.*;
 
 public class TopLevel
 implements ActionListener {
@@ -46,7 +36,7 @@ implements ActionListener {
         this.frame.getRootPane().setWindowDecorationStyle(1);
         this.frame.setLayout(new GridBagLayout());
         if (exitOnClose) {
-            this.frame.setDefaultCloseOperation(3);
+            this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         }
     }
 

@@ -2,7 +2,6 @@ package gui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import security.SecurePassword;
 
 import javax.swing.*;
 import java.awt.Dimension;

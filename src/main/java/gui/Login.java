@@ -1,5 +1,6 @@
 package gui;
 
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -12,6 +13,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.File;
+import java.util.Properties;
+
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,6 +29,11 @@ import javax.swing.JTextField;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 import security.SecurePassword;
 
@@ -132,21 +144,38 @@ public class Login extends JFrame {
 	 * Code executed when enter pressed or when Login button pressed
 	 */
 	private void enterPressed () {
+		boolean flag = false;
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
 		objectNode.put("username", userfield.getText());
 		objectNode.put("password", SecurePassword.sha256(passfield.getText()));
 		System.out.println(objectNode.toString());
 		clear();
-		// tsekarisma an uparxei o sunduasmos username kai password
-		// an uparxei, anoikse to skaki
-		// an den uparxei, gurna sto login me sfalma
-		boolean flag = false;
+		try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
+			Properties properties = new Properties();
+			properties.load(fileInput);
+			final String restAddress = properties.getProperty("restAddress");
+			WebResource webResource = Client.create().resource(restAddress + "/login");
+			ClientResponse response = webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
+			System.out.println(response.getStatus());
+			System.out.println(response.getEntity(String.class));
+			if (response.getStatus() == 200) {
+				dispose();
+				new Table();
+			}
+			else {
+				JOptionPane.showMessageDialog(this, "Incorrect username or password!\nPlease try again");
+			}
+		}
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
 		if (flag) {
 			System.out.println("Have to open the game");
-		}
-		else {
-			// show message in case of invalid credentials
-			JOptionPane.showMessageDialog(this, "Incorrect username or password!\nPlease try again");
 		}
 	}
 	
