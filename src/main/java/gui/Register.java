@@ -10,7 +10,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -30,25 +29,17 @@ import com.sun.jersey.api.client.WebResource;
 import security.SecurePassword;
 
 
-public class Register extends JFrame {
+class Register extends JFrame {
 
 	/**
 	 * identifier for this window.
 	 */
 	private static final long serialVersionUID = 4110874552205024327L;
-	private JLabel title;
-	private JLabel username;
-	private JTextField userfield;
-	private JLabel password;
-	private JTextField passfield;
-	private JLabel repeatPassword;
-	private JTextField repeatPassfield;
-	private JButton clearButton;
-	private JButton registerButton;
-	private JButton backButton;
+	private JTextField userField;
+	private JTextField passwordField;
+	private JTextField repeatPasswordField;
 
-
-	public Register() {
+	Register() {
 		super("Register");
 		setSize(700,300);	// size of register window
 		setLayout(null);	// no default layout is used
@@ -75,7 +66,7 @@ public class Register extends JFrame {
 	 * 	Creating a label to inform the user.
 	 */
 	private void addTitle(){
-		title=new JLabel("Register to use app");
+		JLabel title = new JLabel("Register to use app");
 		title.setSize(400, 50);
 		title.setLocation(300, 15);
 		add(title);
@@ -85,65 +76,65 @@ public class Register extends JFrame {
 	 * 	Label used for Username field.
 	 */
 	private void addUsername(){
-		username = new JLabel("Pick username");	// 	adds a Username label
+		JLabel username = new JLabel("Pick username");	// 	adds a Username label
 		username.setSize(800,80);			//	setting its size and
 		username.setLocation(60,55);		//	location
-		userfield=new JTextField();		//	adds text field for username
-		userfield.addKeyListener(new KeyboardListener());	// sets a keylistener for enter
-		userfield.setColumns(100);			//	adds a username text field
-		userfield.setSize(400, 30);		//	sets its size and location
-		userfield.setLocation(200, 80);	//
+		userField =new JTextField();		//	adds text field for username
+		userField.addKeyListener(new KeyboardListener());	// sets a keylistener for enter
+		userField.setColumns(100);			//	adds a username text field
+		userField.setSize(400, 30);		//	sets its size and location
+		userField.setLocation(200, 80);	//
 		add(username);	//	adds username label and field
-		add(userfield);	//	to this window
+		add(userField);	//	to this window
 	}
 	
 	/**
 	 * Label user for password field.
 	 */
 	private void addPassword(){
-		password = new JLabel("Type your password");	//	adds a password label
+		JLabel password = new JLabel("Type your password");	//	adds a password label
 		password.setSize(800,90);			//	sets its size and location
 		password.setLocation(60,90);
-		passfield=new JPasswordField();	//	adds a password field
-		passfield.addKeyListener(new KeyboardListener());	// adds key listener for enter
-		passfield.setColumns(100);			//	adds password field
-		passfield.setSize(400, 30);		//	sets its size and location
-		passfield.setLocation(200, 120);
+		passwordField =new JPasswordField();	//	adds a password field
+		passwordField.addKeyListener(new KeyboardListener());	// adds key listener for enter
+		passwordField.setColumns(100);			//	adds password field
+		passwordField.setSize(400, 30);		//	sets its size and location
+		passwordField.setLocation(200, 120);
 		add(password);	//	adds password label and
-		add(passfield);	//	password field to this window
+		add(passwordField);	//	password field to this window
 	}
 
 	/**
 	 * Label user for password field.
 	 */
 	private void addRepeatPassword(){
-		repeatPassword = new JLabel("Re-type your password");	//	adds a password label
+		JLabel repeatPassword = new JLabel("Re-type your password");	//	adds a password label
 		repeatPassword.setSize(800,90);			//	sets its size and location
 		repeatPassword.setLocation(60,130);
-		repeatPassfield=new JPasswordField();	//	adds a password field
-		repeatPassfield.addKeyListener(new KeyboardListener());	// adds key listener for enter
-		repeatPassfield.setColumns(100);			//	adds password field
-		repeatPassfield.setSize(400, 30);		//	sets its size and location
-		repeatPassfield.setLocation(200, 160);
+		repeatPasswordField =new JPasswordField();	//	adds a password field
+		repeatPasswordField.addKeyListener(new KeyboardListener());	// adds key listener for enter
+		repeatPasswordField.setColumns(100);			//	adds password field
+		repeatPasswordField.setSize(400, 30);		//	sets its size and location
+		repeatPasswordField.setLocation(200, 160);
 		add(repeatPassword);	//	adds password label and
-		add(repeatPassfield);	//	password field to this window
+		add(repeatPasswordField);	//	password field to this window
 	}
 	
 	/**
 	 * Buttons of the <code>Login</code> window. 
 	 */
 	private void addButtons(){
-		clearButton= new JButton("Clear");		//	creates Clear button,
+		JButton clearButton = new JButton("Clear");		//	creates Clear button,
 		clearButton.setSize(100, 30);		//	sets its size and location
 		clearButton.setLocation(350, 220);
 		clearButton.setActionCommand("Clear");	// sets action command for Cancel button
 		clearButton.addActionListener(new RegisterListeners());	// sets listener for Cancel button
-		registerButton = new JButton("Register");		// 	creates Login button
+		JButton registerButton = new JButton("Register");		// 	creates Login button
 		registerButton.setSize(100, 30);		
 		registerButton.setLocation(500, 220);
 		registerButton.setActionCommand("Register");	// sets action command for Sumbit button
 		registerButton.addActionListener(new RegisterListeners());	// sets listener for Submit button
-		backButton= new JButton("< Back");		//	creates Back button,
+		JButton backButton = new JButton("< Back");		//	creates Back button,
 		backButton.setSize(100, 30);		//	sets its size and location
 		backButton.setLocation(60, 220);
 		backButton.setActionCommand("Back");	// sets action command for Back button
@@ -161,28 +152,24 @@ public class Register extends JFrame {
 	 */
 	private void enterPressed () {
 
-		if (userfield.getText().isEmpty()) {
+		if (userField.getText().isEmpty()) {
 			clear();
 			JOptionPane.showMessageDialog(this, "Username connot be empty\nPlease try again");
 		}
-		else if (!passfield.getText().equals(repeatPassfield.getText())) {
+		else if (!passwordField.getText().equals(repeatPasswordField.getText())) {
 			clear();
 			JOptionPane.showMessageDialog(this, "Passwords need to match\nPlease try again");
 		}
 		else {
 	        ObjectNode objectNode = new ObjectMapper().createObjectNode();
-			objectNode.put("name", userfield.getText());
-			objectNode.put("password",  SecurePassword.sha256(passfield.getText()));
-			System.out.println(objectNode.toString());
+			objectNode.put("name", userField.getText());
+			objectNode.put("password",  SecurePassword.sha256(passwordField.getText()));
 			clear();
 			try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
 				Properties properties = new Properties();
 				properties.load(fileInput);
-				final String restAddress = properties.getProperty("restAddress");
-				WebResource webResource = Client.create().resource(restAddress + "/register");
+				WebResource webResource = Client.create().resource(properties.getProperty("restAddress") + "/register");
 				ClientResponse response = webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
-				System.out.println(response.getStatus());
-				System.out.println(response.getEntity(String.class));
 				if (response.getStatus() == 200) {
 					JOptionPane.showMessageDialog(this, "Registration succeeded");
 					back();
@@ -190,9 +177,6 @@ public class Register extends JFrame {
 				else {
 					JOptionPane.showMessageDialog(this, "Username already exists\nPlease try again");
 				}
-			}
-			catch (FileNotFoundException e) {
-				e.printStackTrace();
 			}
 			catch (IOException e) {
 				e.printStackTrace();
@@ -204,9 +188,9 @@ public class Register extends JFrame {
 	 * On Clear button pressed 
 	 */
 	private void clear () {
-		userfield.setText("");
-		passfield.setText("");
-		repeatPassfield.setText("");
+		userField.setText("");
+		passwordField.setText("");
+		repeatPasswordField.setText("");
 	}
 	
 	/**
@@ -251,5 +235,4 @@ public class Register extends JFrame {
 				back();
 		}
 	}
-	
 }
