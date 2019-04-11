@@ -150,8 +150,7 @@ public class Table  extends JFrame {
     }
 
     private void removeTable () {
-        WebResource webResource = Client.create().resource(baseUrl + "/removetable/" + whoAmI);
-        webResource.get(ClientResponse.class);
+        Client.create().resource(baseUrl + "/removetable/" + whoAmI).get(ClientResponse.class);
     }
 
     private void addTable () {

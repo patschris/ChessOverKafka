@@ -41,12 +41,14 @@ public class Login extends JFrame {
 	private JTextField userField;
 	private JTextField passwordField;
 	private JLabel register;
+	private String baseUrl;
 
 	public Login() {
 		super("Login");
 		setSize(700,300);	// size of login window
 		setLayout(null);	// no default layout is used
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	// close operation
+		getBaseUrl();
 		addTitle();
 		addUsername();
 		addPassword();
@@ -132,7 +134,18 @@ public class Login extends JFrame {
 		register.addMouseListener(new RegisterListener());
 		add(register);
 	}
-	
+
+	private void getBaseUrl () {
+		try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
+			Properties properties = new Properties();
+			properties.load(fileInput);
+			baseUrl = properties.getProperty("restAddress");
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Code executed when enter pressed or when Login button pressed
 	 */
@@ -142,23 +155,15 @@ public class Login extends JFrame {
 		objectNode.put("name", username);
 		objectNode.put("password", SecurePassword.sha256(passwordField.getText()));
 		clear();
-		try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
-			Properties properties = new Properties();
-			properties.load(fileInput);
-			WebResource webResource = Client.create().resource(properties.getProperty("restAddress") + "/login");
-			ClientResponse response = webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
-			if (response.getStatus() == 200) {
-				dispose();
-				new Table(username);
-			}
-			else {
-				JOptionPane.showMessageDialog(this, "Incorrect username or password!\nPlease try again");
-			}
+		WebResource webResource = Client.create().resource(baseUrl+ "/login");
+		ClientResponse response = webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
+		if (response.getStatus() == 200) {
+			dispose();
+			new Table(username);
 		}
-		catch (IOException e) {
-			e.printStackTrace();
+		else {
+			JOptionPane.showMessageDialog(this, "Incorrect username or password!\nPlease try again");
 		}
-
     }
 	
 	/**
