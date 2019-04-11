@@ -1,5 +1,7 @@
 package chess;
 
+import chess.pieces.Piece;
+
 /** A double move in a chess game (for En passant and castle).
  *  @author Wan Fung Chui
  */

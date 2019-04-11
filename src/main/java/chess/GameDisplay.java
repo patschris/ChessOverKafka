@@ -1,5 +1,7 @@
 package chess;
 
+import chess.pieces.Piece;
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;

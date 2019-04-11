@@ -1,6 +1,8 @@
-package chess;
+package chess.pieces;
 
-import static chess.PieceType.*;
+import chess.*;
+
+import static chess.pieces.PieceType.*;
 
 /** A king in a chess game.
  *  @author Wan Fung Chui

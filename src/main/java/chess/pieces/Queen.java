@@ -1,6 +1,13 @@
-package chess;
+package chess.pieces;
 
-import static chess.PieceType.*;
+import chess.Game;
+import chess.Move;
+import chess.SingleMove;
+import chess.pieces.Piece;
+import chess.pieces.PieceColor;
+import chess.pieces.PieceType;
+
+import static chess.pieces.PieceType.*;
 
 /** A queen in a chess game.
  *  @author Wan Fung Chui

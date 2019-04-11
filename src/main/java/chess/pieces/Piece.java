@@ -1,4 +1,5 @@
-package chess;
+package chess.pieces;
+
 
 /** A piece in a chess game.
  *  @author Wan Fung Chui

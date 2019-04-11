@@ -1,4 +1,4 @@
-package chess;
+package chess.pieces;
 
 /** The different types of pieces in a chess game.
  *  @author Wan Fung Chui

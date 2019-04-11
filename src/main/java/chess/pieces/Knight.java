@@ -1,6 +1,10 @@
-package chess;
+package chess.pieces;
 
-import static chess.PieceType.*;
+import chess.Game;
+import chess.Move;
+import chess.SingleMove;
+
+import static chess.pieces.PieceType.*;
 
 /** A knight in a chess game.
  *  @author Wan Fung Chui

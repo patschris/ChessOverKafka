@@ -1,5 +1,7 @@
 package chess;
 
+import chess.pieces.Piece;
+
 import java.awt.event.MouseEvent;
 
 import static chess.GameDisplay.*;

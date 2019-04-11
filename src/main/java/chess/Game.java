@@ -1,9 +1,13 @@
 package chess;
 
+import chess.pieces.*;
+
 import java.util.List;
 import java.util.ArrayList;
 
-import static chess.PieceColor.*;
+import static chess.pieces.PieceColor.BLACK;
+import static chess.pieces.PieceColor.WHITE;
+
 
 /** Represents a game of chess with a board and GUI.
  *  @author Wan Fung Chui

@@ -1,50 +1,61 @@
-package chess;
+package chess.pieces;
 
-import static chess.PieceType.*;
+import chess.Game;
+import chess.Move;
+import chess.SingleMove;
+import chess.pieces.Piece;
+import chess.pieces.PieceColor;
+import chess.pieces.PieceType;
 
-/** A bishop in a chess game.
+import static chess.pieces.PieceType.*;
+
+/** A rook in a chess game.
  *  @author Wan Fung Chui
  */
-public class Bishop implements Piece {
+public class Rook implements Piece {
 
     /** A constructor for a piece on the board with color COLOR,
       * game GAME, and location (X, Y). */
-    public Bishop(PieceColor color, Game game, int x, int y) {
+    public Rook(PieceColor color, Game game, int x, int y) {
         _color = color;
         _game = game;
         _x = x;
         _y = y;
     }
 
+    
     public String imageString() {
-        return _color.abbrev() + BISHOP.abbrev();
+        return _color.abbrev() + ROOK.abbrev();
     }
 
+    
     public PieceColor color() {
         return _color;
     }
 
+    
     public PieceType type() {
-        return BISHOP;
+        return ROOK;
     }
 
+    
     public boolean makeValidMove(int a, int b) {
         if (_game.get(a, b) != null
             && _game.get(a, b).color() == _color) {
             return false;
-        } else if (a + b == _x + _y) {
-            int dir = (a - _x) / Math.abs(a - _x);
-            for (int i = _x + dir, j = _y - dir; i != a; i += dir, j -= dir) {
-                if (_game.get(i, j) != null) {
+        } else if (a == _x) {
+            int dir = (b - _y) / Math.abs(b - _y);
+            for (int i = _y + dir; i != b; i += dir) {
+                if (_game.get(_x, i) != null) {
                     return false;
                 }
             }
             Move move = new SingleMove(this, _x, _y, _game.get(a, b), a, b);
             return makeMoveCareful(move);
-        } else if (a - b == _x - _y) {
+        } else if (b == _y) {
             int dir = (a - _x) / Math.abs(a - _x);
-            for (int i = _x + dir, j = _y + dir; i != a; i += dir, j += dir) {
-                if (_game.get(i, j) != null) {
+            for (int i = _x + dir; i != a; i += dir) {
+                if (_game.get(i, _y) != null) {
                     return false;
                 }
             }
@@ -55,16 +66,18 @@ public class Bishop implements Piece {
         }
     }
 
+    
     public void setLocation(int x, int y) {
         _x = x;
         _y = y;
     }
 
+    
     public boolean hasMove() {
-        if ((_x + 1 <= 7 && _y + 1 <= 7 && makeValidMove(_x + 1, _y + 1))
-            || (_x + 1 <= 7 && _y - 1 >= 0 && makeValidMove(_x + 1, _y - 1))
-            || (_x - 1 >= 0 && _y + 1 <= 7 && makeValidMove(_x - 1, _y + 1))
-            || (_x - 1 >= 0 && _y - 1 >= 0 && makeValidMove(_x - 1, _y - 1))) {
+        if ((_x + 1 <= 7 && makeValidMove(_x + 1, _y))
+            || (_x - 1 >= 0 && makeValidMove(_x - 1, _y))
+            || (_y + 1 <= 7 && makeValidMove(_x, _y + 1))
+            || (_y - 1 >= 0 && makeValidMove(_x, _y - 1))) {
             _game.undoMove();
             return true;
         } else {
@@ -72,19 +85,20 @@ public class Bishop implements Piece {
         }
     }
 
+    
     public boolean canCapture(int a, int b) {
-        if (a + b == _x + _y) {
-            int dir = (a - _x) / Math.abs(a - _x);
-            for (int i = _x + dir, j = _y - dir; i != a; i += dir, j -= dir) {
-                if (_game.get(i, j) != null) {
+        if (a == _x) {
+            int dir = (b - _y) / Math.abs(b - _y);
+            for (int i = _y + dir; i != b; i += dir) {
+                if (_game.get(_x, i) != null) {
                     return false;
                 }
             }
             return true;
-        } else if (a - b == _x - _y) {
+        } else if (b == _y) {
             int dir = (a - _x) / Math.abs(a - _x);
-            for (int i = _x + dir, j = _y + dir; i != a; i += dir, j += dir) {
-                if (_game.get(i, j) != null) {
+            for (int i = _x + dir; i != a; i += dir) {
+                if (_game.get(i, _y) != null) {
                     return false;
                 }
             }
@@ -102,8 +116,14 @@ public class Bishop implements Piece {
             _game.undoMove();
             return false;
         } else {
+            _moved = true;
             return true;
         }
+    }
+
+    /** Returns whether this rook has been moved. */
+    public boolean moved() {
+        return _moved;
     }
 
     /** The game this piece belongs to. */
@@ -115,7 +135,10 @@ public class Bishop implements Piece {
     /** The x-location of this piece. */
     private int _x;
 
-    /** THe y-location of this piece. */
+    /** The y-location of this piece. */
     private int _y;
+
+    /** Stores whether this rook has been moved (for castle). */
+    private boolean _moved;
 
 }

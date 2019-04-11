@@ -1,5 +1,7 @@
 package chess;
 
+import chess.pieces.Piece;
+
 /** A normal, single move in a chess game.
  *  @author Wan Fung Chui
  */

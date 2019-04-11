@@ -1,5 +1,7 @@
 package chess;
 
+import chess.pieces.Piece;
+
 /** A move in a chess game.
  *  @author Wan Fung Chui
  */

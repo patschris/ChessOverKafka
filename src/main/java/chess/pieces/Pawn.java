@@ -1,6 +1,11 @@
-package chess;
+package chess.pieces;
 
-import static chess.PieceType.*;
+import chess.DoubleMove;
+import chess.Game;
+import chess.Move;
+import chess.SingleMove;
+
+import static chess.pieces.PieceType.*;
 
 /** A pawn in a chess game.
  *  @author Wan Fung Chui

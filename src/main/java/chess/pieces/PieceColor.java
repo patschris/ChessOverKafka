@@ -1,9 +1,9 @@
-package chess;
+package chess.pieces;
 
 /** The different colors of pieces in a chess game.
  *  @author Wan Fung Chui
  */
-enum PieceColor {
+public enum PieceColor {
     /** The names of the colors. */
     BLACK, WHITE;
 
