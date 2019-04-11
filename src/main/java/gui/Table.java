@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
-public class Table  extends JFrame {
+public class Table extends JFrame {
 
     private String baseUrl;
     private String whoAmI;
@@ -109,6 +109,7 @@ public class Table  extends JFrame {
         scrollPane.setBounds(100, 90, 450, 120);
         add(scrollPane);
         scrollPane.setVisible(false);
+        JFrame l = new Login();
     }
 
     private void addButtons(){
