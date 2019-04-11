@@ -17,8 +17,7 @@ import java.util.HashMap;
 import javax.swing.JComponent;
 
 
-public class Pad
-extends Widget {
+public class Pad extends Widget {
     private final HashMap<String, Handler> eventMap = new HashMap<String, Handler>();
     private static final String[] eventNames = new String[]{"press", "release", "click", "enter", "exit", "drag", "move"};
     private Dimension minimumSize;
@@ -120,10 +119,7 @@ extends Widget {
         }
     }
 
-    private class PadComponent
-    extends JComponent
-    implements MouseListener,
-    MouseMotionListener {
+    private class PadComponent extends JComponent implements MouseListener, MouseMotionListener {
         /**
 		 * 
 		 */

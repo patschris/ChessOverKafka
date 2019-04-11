@@ -1,11 +1,8 @@
 package chess.pieces;
 
 import chess.Game;
-import chess.Move;
-import chess.SingleMove;
-import chess.pieces.Piece;
-import chess.pieces.PieceColor;
-import chess.pieces.PieceType;
+import chess.moves.Move;
+import chess.moves.SingleMove;
 
 import static chess.pieces.PieceType.*;
 

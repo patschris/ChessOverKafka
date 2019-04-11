@@ -1,9 +1,9 @@
 package chess.pieces;
 
-import chess.DoubleMove;
+import chess.moves.DoubleMove;
 import chess.Game;
-import chess.Move;
-import chess.SingleMove;
+import chess.moves.Move;
+import chess.moves.SingleMove;
 
 import static chess.pieces.PieceType.*;
 

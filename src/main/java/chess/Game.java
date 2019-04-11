@@ -1,5 +1,8 @@
 package chess;
 
+import chess.moves.DoubleMove;
+import chess.moves.Move;
+import chess.moves.SingleMove;
 import chess.pieces.*;
 
 import java.util.List;

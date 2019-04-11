@@ -1,4 +1,4 @@
-package chess;
+package chess.moves;
 
 import chess.pieces.Piece;
 
@@ -24,8 +24,7 @@ public class SingleMove implements Move {
       * onto the target piece T, from the cell at (X1, Y1) to
       * the cell at (X2, Y2), replacing the cell at (X1, Y1) with
       * the piece designated by R. */
-    private SingleMove(Piece s, int x1, int y1, Piece t,
-        int x2, int y2, Piece r) {
+    private SingleMove(Piece s, int x1, int y1, Piece t, int x2, int y2, Piece r) {
         _selected = s;
         _x1 = x1;
         _y1 = y1;
