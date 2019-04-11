@@ -1,5 +1,6 @@
-package chess;
+package chess.chessgui;
 
+import chess.game.Game;
 import chess.pieces.Piece;
 
 import java.awt.Graphics2D;

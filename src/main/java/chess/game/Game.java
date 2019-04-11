@@ -1,5 +1,6 @@
-package chess;
+package chess.game;
 
+import chess.chessgui.ChessGUI;
 import chess.moves.DoubleMove;
 import chess.moves.Move;
 import chess.moves.SingleMove;

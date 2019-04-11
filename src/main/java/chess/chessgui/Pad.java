@@ -2,7 +2,7 @@
  * Decompiled from UC Berkeley's ucb.gui package.
  * @author P.N. Hilfinger
  */
-package chess;
+package chess.chessgui;
 
 import java.awt.Dimension;
 import java.awt.Graphics;

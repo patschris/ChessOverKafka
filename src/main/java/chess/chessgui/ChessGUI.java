@@ -1,28 +1,30 @@
-package chess;
+package chess.chessgui;
 
+import chess.game.Game;
 import chess.pieces.Piece;
 
 import java.awt.event.MouseEvent;
 
-import static chess.GameDisplay.*;
+import static chess.chessgui.GameDisplay.CELL;
+import static chess.chessgui.GameDisplay.MARGIN;
 
 /** A top-level GUI for Chess.
  *  @author Wan Fung Chui
  */
 
-class ChessGUI extends TopLevel {
+public class ChessGUI extends TopLevel {
 
     /** A new window with given TITLE and displaying GAME. */
-    ChessGUI(String title, Game game) {
+    public ChessGUI(String title, Game game) {
         super(title, true);
         _game = game;
         addLabel("Welcome to 2-Player Chess. "
             + "Click a piece and then its destination to play! "
             + "WHITE's turn.", "turn",
             new LayoutSpec("y", 0, "x", 0));
-        addMenuButton("Options->Quit", "quit");
+        /*addMenuButton("Options->Quit", "quit");
         addMenuButton("Options->Undo", "undo");
-        addMenuButton("Options->New Game", "newGame");
+        addMenuButton("Options->New Game", "newGame");*/
         _display = new GameDisplay(game);
         add(_display, new LayoutSpec("y", 2, "width", 2));
         _display.setMouseHandler("press", this, "mousePressed");
