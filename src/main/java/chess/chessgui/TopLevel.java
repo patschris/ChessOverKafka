@@ -15,8 +15,7 @@ import java.util.HashMap;
 
 import javax.swing.*;
 
-public class TopLevel
-implements ActionListener {
+public class TopLevel implements ActionListener {
     private final HashMap<String, ButtonHandler> buttonMap = new HashMap<String, ButtonHandler>();
     private final HashMap<String, ButtonGroup> buttonGroups = new HashMap<String, ButtonGroup>();
     private final HashMap<String, JLabel> labelMap = new HashMap<String, JLabel>();
@@ -281,7 +280,7 @@ implements ActionListener {
     }
 
     public static class ButtonHandler
-    extends Handler {
+            extends Handler {
         ButtonHandler(String funcName, Object receiver, String id, AbstractButton src) {
             super(funcName, receiver, id, src, String.class);
         }
@@ -315,4 +314,3 @@ implements ActionListener {
     }
 
 }
-

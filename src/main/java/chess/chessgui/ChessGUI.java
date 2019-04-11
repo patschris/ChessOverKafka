@@ -19,9 +19,10 @@ public class ChessGUI extends TopLevel {
         super(title, true);
         _game = game;
         addLabel("Welcome to 2-Player Chess. "
-            + "Click a piece and then its destination to play! "
-            + "WHITE's turn.", "turn",
-            new LayoutSpec("y", 0, "x", 0));
+                        + "Click a piece and then its destination to play! "
+                        + "WHITE's turn.", "turn",
+                new LayoutSpec("y", 1, "x", 0));
+
         /*addMenuButton("Options->Quit", "quit");
         addMenuButton("Options->Undo", "undo");
         addMenuButton("Options->New Game", "newGame");*/
@@ -32,23 +33,23 @@ public class ChessGUI extends TopLevel {
     }
 
     /** Respond to the "New Game" button. */
-    public void newGame(String dummy) {
+    /*public void newGame(String dummy) {
         _game.newGame();
         repaint(true);
-    }
+    }*/
 
     /** Respond to the "Quit" button. */
-    public void quit(String dummy) {
+   /* public void quit(String dummy) {
         _game.quit();
-    }
+    }*/
 
     /** Respond to the "Undo" button. */
-    public void undo(String dummy) {
+   /* public void undo(String dummy) {
         _game.undoMove();
         _game.setSelectedX(-1);
         _game.setSelectedY(-1);
         repaint(true);
-    }
+    }*/
 
     /** Action in response to mouse-pressed event EVENT. */
     public synchronized void mousePressed(MouseEvent event) {
@@ -78,7 +79,7 @@ public class ChessGUI extends TopLevel {
             if (_game.noMoves()) {
                 if (_game.inCheck(_game.turn())) {
                     label = "CHECKMATE, " + _game.turn().opposite().string()
-                        + " wins.";
+                            + " wins.";
                 } else {
                     label = "STALEMATE, game ends in draw.";
                 }

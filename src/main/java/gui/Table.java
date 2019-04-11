@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -109,7 +108,6 @@ public class Table extends JFrame {
         scrollPane.setBounds(100, 90, 450, 120);
         add(scrollPane);
         scrollPane.setVisible(false);
-        JFrame l = new Login();
     }
 
     private void addButtons(){
@@ -206,6 +204,11 @@ public class Table extends JFrame {
             new SwingWorker<Void, Void>() {
                 protected Void doInBackground() {
                     addTable();
+
+                    //eimai o white
+                    // anoikse kafka topic
+
+
                     return null;
                 }
 

@@ -1,11 +1,16 @@
 package chess.game;
 
 import chess.chessgui.ChessGUI;
+import chess.chessgui.GameDisplay;
 import chess.moves.DoubleMove;
 import chess.moves.Move;
 import chess.moves.SingleMove;
 import chess.pieces.*;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -18,6 +23,7 @@ import static chess.pieces.PieceColor.WHITE;
  */
 
 public class Game {
+
 
     /** A game of 2-player chess, displayed in a GUI. */
     public Game() {
@@ -36,9 +42,9 @@ public class Game {
     }
 
     /** Quits the game. */
-    public void quit() {
+    /*public void quit() {
         System.exit(0);
-    }
+    }*/
 
     /** Undoes the last move in the game. */
     public void undoMove() {
@@ -115,8 +121,7 @@ public class Game {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Piece p = get(i, j);
-                if (p != null && p.color() == _turn.opposite()
-                    && p.canCapture(x, y)) {
+                if (p != null && p.color() == _turn.opposite() && p.canCapture(x, y)) {
                     return true;
                 }
             }
@@ -184,7 +189,8 @@ public class Game {
     public int kingX(PieceColor color) {
         if (color == WHITE) {
             return _whiteKi.getX();
-        } else {
+        }
+        else {
             return _blackKi.getX();
         }
     }
@@ -193,7 +199,8 @@ public class Game {
     public int kingY(PieceColor color) {
         if (color == WHITE) {
             return _whiteKi.getY();
-        } else {
+        }
+        else {
             return _blackKi.getY();
         }
     }
@@ -252,5 +259,4 @@ public class Game {
 
     /** The y-location of the piece selected by the user for a move. */
     private int _selectedY;
-
 }

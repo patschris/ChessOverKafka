@@ -31,9 +31,9 @@ public class Pad extends Widget {
         }
     }
 
-    protected void setSize(int width, int height) {
+    /*protected void setSize(int width, int height) {
         this.me.setSize(width, height);
-    }
+    }*/
 
     protected void setPreferredSize(int width, int height) {
         this.preferredSize = new Dimension(width, height);
@@ -76,9 +76,9 @@ public class Pad extends Widget {
         }
     }
 
-    protected void setMouseHandler(String event, String funcName) {
+    /*protected void setMouseHandler(String event, String funcName) {
         this.setMouseHandler(event, this, funcName);
-    }
+    }*/
 
     protected void paintComponent(Graphics2D g) {
     }
@@ -121,11 +121,11 @@ public class Pad extends Widget {
 
     private class PadComponent extends JComponent implements MouseListener, MouseMotionListener {
         /**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
-		private PadComponent() {
+        private PadComponent() {
         }
 
         public void paintComponent(Graphics g) {
@@ -183,4 +183,3 @@ public class Pad extends Widget {
     }
 
 }
-

@@ -4,7 +4,7 @@
  */
 package chess.chessgui;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
 public abstract class Widget {
     protected JComponent me;
