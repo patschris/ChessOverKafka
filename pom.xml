@@ -29,7 +29,7 @@
 						</execution>
 					</executions>
 					<configuration>
-						<mainClass>chess.Main</mainClass>
+						<mainClass>main.Main</mainClass>
 					</configuration>
 				</plugin>
 			</plugins>

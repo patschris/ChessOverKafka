@@ -1,17 +1,19 @@
-package chess;
+package main;
 
-import gui.Login;
-import gui.Table;
+
+import chess.Game;
 
 /** Main class of the Chess program.
  * @author Wan Fung Chui
  */
 
+
 public class Main {
 
     /** Opens and begins a new game of chess. */
     public static void main(String... dummy) {
-        new Login();
+
+        new Game();
     }
 
 }

@@ -9,10 +9,10 @@ import static chess.PieceColor.*;
  *  @author Wan Fung Chui
  */
 
-class Game {
+public class Game {
 
     /** A game of 2-player chess, displayed in a GUI. */
-    Game() {
+    public Game() {
         _moves = new ArrayList<Move>();
         _gui = new ChessGUI("Chess", this);
         newGame();
