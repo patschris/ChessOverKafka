@@ -111,7 +111,7 @@ class Register extends JFrame {
 		JLabel repeatPassword = new JLabel("Re-type your password");	//	adds a password label
 		repeatPassword.setSize(800,90);			//	sets its size and location
 		repeatPassword.setLocation(60,130);
-		repeatPasswordField =new JPasswordField();	//	adds a password field
+		repeatPasswordField = new JPasswordField();	//	adds a password field
 		repeatPasswordField.addKeyListener(new KeyboardListener());	// adds key listener for enter
 		repeatPasswordField.setColumns(100);			//	adds password field
 		repeatPasswordField.setSize(400, 30);		//	sets its size and location

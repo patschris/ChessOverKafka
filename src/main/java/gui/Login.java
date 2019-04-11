@@ -137,8 +137,9 @@ public class Login extends JFrame {
 	 * Code executed when enter pressed or when Login button pressed
 	 */
 	private void enterPressed () {
+		String username = userField.getText();
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
-		objectNode.put("name", userField.getText());
+		objectNode.put("name", username);
 		objectNode.put("password", SecurePassword.sha256(passwordField.getText()));
 		clear();
 		try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
@@ -148,7 +149,7 @@ public class Login extends JFrame {
 			ClientResponse response = webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
 			if (response.getStatus() == 200) {
 				dispose();
-				new Table();
+				new Table(username);
 			}
 			else {
 				JOptionPane.showMessageDialog(this, "Incorrect username or password!\nPlease try again");
@@ -157,6 +158,7 @@ public class Login extends JFrame {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+
     }
 	
 	/**

@@ -2,30 +2,40 @@ package gui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import javax.swing.*;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 
 public class Table  extends JFrame {
 
-    private JLabel title;
+    private String baseUrl;
+    private String whoAmI;
     private JLabel subtitle;
-    private JComboBox<String> dropdown;
     private JLabel gifLabel;
     private DefaultListModel model;
     private JList list;
     private JScrollPane scrollPane;
     private JButton clearButton;
     private JButton submitButton;
+    private JButton refreshButton;
 
-    public Table() {
+    public Table(String userLoggedIn) {
         super("Table");
+        whoAmI = userLoggedIn;
         setSize(700,300);	// size of login window
         setLayout(null);	// no default layout is used
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	// close operation
@@ -37,9 +47,10 @@ public class Table  extends JFrame {
         addList();
         addButtons();
 
+        getBaseUrl();
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent){
-                // program ends if Login window is closed
+                removeTable();
                 System.exit(0);
             }
         });
@@ -53,7 +64,7 @@ public class Table  extends JFrame {
      * 	Creating a label to inform the user.
      */
     private void addTitle(){
-        title=new JLabel("Create a new table or join another table?");
+        JLabel title = new JLabel("Create a new table or join another table?");
         title.setSize(300, 50);
         title.setLocation(100, 15);
         add(title);
@@ -61,7 +72,7 @@ public class Table  extends JFrame {
 
     private void createDropDown(){
         String[] selections = new String[] {"<html><b><i>Select Option</i></b></html>", "Create table", "Join table"};
-        dropdown = new JComboBox<>(selections);
+        JComboBox<String> dropdown = new JComboBox<>(selections);
         dropdown.setSize(150, 25);
         dropdown.setLocation(400, 25);
         dropdown.setSelectedIndex(0);
@@ -89,16 +100,6 @@ public class Table  extends JFrame {
     private void addList(){
         model = new DefaultListModel();
 
-        /*
-         * xtupame na paroume antipalous
-         * theloume kai kapws na einai interactive
-         */
-
-        model.addElement("Christos");
-        model.addElement("Giorgos");
-        model.addElement("Thanos");
-
-
         list = new JList(model);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -111,7 +112,7 @@ public class Table  extends JFrame {
     }
 
     private void addButtons(){
-        clearButton= new JButton("Clear");		//	creates Clear button,
+        clearButton = new JButton("Clear");		//	creates Clear button,
         clearButton.setSize(100, 30);		//	sets its size and location
         clearButton.setLocation(220, 235);
         clearButton.setActionCommand("Clear");	// sets action command for Cancel button
@@ -121,10 +122,49 @@ public class Table  extends JFrame {
         submitButton.setLocation(350, 235);
         submitButton.setActionCommand("Play");	// sets action command for Sumbit button
         submitButton.addActionListener(new ButtonPressedListener(this));	// sets listener for Submit button
-        add(clearButton);	//
-        add(submitButton);	// adds Cancel and Sumbit buttons to this window
+        URL url = this.getClass().getResource("/chess/images/gui/refresh.png");
+        ImageIcon icon = new ImageIcon(url);
+        refreshButton = new JButton(icon);
+
+        refreshButton.setSize(50,50);
+        refreshButton.setLocation(560, 120);
+        refreshButton.setActionCommand("Refresh");
+        refreshButton.addActionListener(new ButtonPressedListener(this));
+        add(clearButton);
+        add(submitButton);
+        add(refreshButton);
         clearButton.setVisible(false);
         submitButton.setVisible(false);
+        refreshButton.setVisible(false);
+    }
+
+    private void getBaseUrl () {
+        try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
+            Properties properties = new Properties();
+            properties.load(fileInput);
+            baseUrl = properties.getProperty("restAddress");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeTable () {
+        WebResource webResource = Client.create().resource(baseUrl + "/removetable/" + whoAmI);
+        webResource.get(ClientResponse.class);
+    }
+
+    private void addTable () {
+        Client.create().resource(baseUrl + "/newtable/" + whoAmI).get(ClientResponse.class);
+    }
+
+    private void getOpponents () {
+        ClientResponse response = Client.create().resource(baseUrl + "/getopponents/" + whoAmI).get(ClientResponse.class);
+        JsonArray players = new JsonParser().parse(response.getEntity(String.class)).getAsJsonArray();
+        model.clear();
+        for (JsonElement player:players) {
+            model.addElement(player.getAsJsonObject().get("name").getAsString());
+        }
     }
 
 
@@ -151,7 +191,9 @@ public class Table  extends JFrame {
             scrollPane.setVisible(false);
             clearButton.setVisible(false);
             submitButton.setVisible(false);
+            refreshButton.setVisible(false);
             subtitle.setText("");
+            removeTable();
         }
 
         private void OnCreateTableSelected(){
@@ -160,9 +202,10 @@ public class Table  extends JFrame {
             scrollPane.setVisible(false);
             clearButton.setVisible(false);
             submitButton.setVisible(false);
+            refreshButton.setVisible(false);
             new SwingWorker<Void, Void>() {
-                protected Void doInBackground() throws Exception {
-                    Thread.sleep(5000);
+                protected Void doInBackground() {
+                    addTable();
                     return null;
                 }
 
@@ -179,9 +222,10 @@ public class Table  extends JFrame {
             scrollPane.setVisible(true);
             clearButton.setVisible(true);
             submitButton.setVisible(true);
+            refreshButton.setVisible(true);
             new SwingWorker<Void, Void>() {
-                protected Void doInBackground() throws Exception {
-                    Thread.sleep(5000);
+                protected Void doInBackground()  {
+                    getOpponents();
                     return null;
                 }
 
@@ -218,10 +262,12 @@ public class Table  extends JFrame {
 
                 }
             }
+            else if (actionEvent.getActionCommand().equals("Refresh")) {
+                getOpponents();
+            }
             else {
                 list.clearSelection();
             }
         }
-
     }
 }
