@@ -50,11 +50,15 @@ public class ChessGUI extends TopLevel {
     }
 
     public void chat(String dummy) {
-        chat = new Chat();
+        if (chat == null) chat = new Chat(this);
     }
 
     public void closeChat () {
         if (chat != null) chat.dispose();
+    }
+
+    public void setChat (Chat c) {
+        chat = c;
     }
 
     public void stats(String dummy) {

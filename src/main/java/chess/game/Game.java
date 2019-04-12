@@ -261,5 +261,4 @@ public class Game {
 
     /** The y-location of the piece selected by the user for a move. */
     private int _selectedY;
-
 }
