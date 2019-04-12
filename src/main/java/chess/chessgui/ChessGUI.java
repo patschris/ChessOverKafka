@@ -4,6 +4,7 @@ import chess.game.Game;
 import chess.pieces.Piece;
 import gui.Chat;
 
+import javax.swing.text.BadLocationException;
 import java.awt.event.MouseEvent;
 
 import static chess.chessgui.GameDisplay.CELL;
@@ -49,7 +50,7 @@ public class ChessGUI extends TopLevel {
         _game.quit();
     }
 
-    public void chat(String dummy) {
+    public void chat(String dummy) throws BadLocationException {
         if (chat == null) chat = new Chat(this);
     }
 

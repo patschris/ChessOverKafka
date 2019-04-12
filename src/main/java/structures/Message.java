@@ -9,7 +9,11 @@ public class Message {
         this.text = text;
     }
 
-    public String configureMessage (String me) {
+    public String getUser() {
+        return user;
+    }
+
+    public String returnMessage() {
         return user + " > " + text + "\n";
     }
 }

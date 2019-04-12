@@ -1,6 +1,11 @@
 package structures;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -18,13 +23,14 @@ public class ChatMemory {
         messages.add(m);
     }
 
-    public static void retrieveHistory (String me, JTextArea area) {
-        String result = "";
-
+    /*  https://stackoverflow.com/questions/4059198/jtextpane-appending-a-new-string  */
+    public static void retrieveHistory (String me, JTextPane pane) throws BadLocationException {
+        StyledDocument doc = pane.getStyledDocument();
+        SimpleAttributeSet keyWord = new SimpleAttributeSet();
         for (Message m : messages) {
-          result += m.configureMessage(me);
+            if (m.getUser().equals(me)) StyleConstants.setForeground(keyWord, Color.BLACK);
+            else StyleConstants.setForeground(keyWord, Color.BLUE);
+            doc.insertString(doc.getLength(),m.returnMessage(), keyWord);
         }
-
-        area.append(result);
     }
 }
