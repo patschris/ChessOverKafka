@@ -1,8 +1,6 @@
 package main;
 
-
 import chess.game.Game;
-import gui.Login;
 
 /** Main class of the Chess program.
  * @author Wan Fung Chui

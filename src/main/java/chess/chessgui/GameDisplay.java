@@ -31,7 +31,7 @@ public class GameDisplay extends Pad {
     /** Constructs a graphical representation of GAME. */
     public GameDisplay(Game game) {
         _game = game;
-        setPreferredSize(BOARD, BOARD);  //Edw diplasiazw to megethos tou parathurou
+        setPreferredSize(BOARD, BOARD);
         setMaximumSize(BOARD, BOARD);
         setMinimumSize(BOARD, BOARD);
     }

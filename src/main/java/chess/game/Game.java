@@ -6,6 +6,7 @@ import chess.moves.DoubleMove;
 import chess.moves.Move;
 import chess.moves.SingleMove;
 import chess.pieces.*;
+import gui.Chat;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,9 +43,10 @@ public class Game {
     }
 
     /** Quits the game. */
-    /*public void quit() {
+    public void quit() {
+        _gui.closeChat();
         System.exit(0);
-    }*/
+    }
 
     /** Undoes the last move in the game. */
     public void undoMove() {
@@ -259,4 +261,5 @@ public class Game {
 
     /** The y-location of the piece selected by the user for a move. */
     private int _selectedY;
+
 }

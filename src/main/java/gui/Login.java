@@ -83,7 +83,7 @@ public class Login extends JFrame {
         JLabel username = new JLabel("Username");	// 	adds a Username label
 		username.setSize(800,80);			//	setting its size and
 		username.setLocation(80,55);		//	location
-		userField=new JTextField();		//	adds text field for username
+		userField = new JTextField();		//	adds text field for username
 		userField.addKeyListener(new KeyboardListener());	// sets a keylistener for enter
 		userField.setColumns(100);			//	adds a username text field
 		userField.setSize(400, 30);		//	sets its size and location

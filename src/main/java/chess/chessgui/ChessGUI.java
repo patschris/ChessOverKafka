@@ -2,6 +2,7 @@ package chess.chessgui;
 
 import chess.game.Game;
 import chess.pieces.Piece;
+import gui.Chat;
 
 import java.awt.event.MouseEvent;
 
@@ -23,7 +24,11 @@ public class ChessGUI extends TopLevel {
                         + "WHITE's turn.", "turn",
                 new LayoutSpec("y", 1, "x", 0));
 
-        /*addMenuButton("Options->Quit", "quit");
+        addMenuButton("Options->Chat", "chat");
+        addMenuButton("Options->Stats", "stats");
+        addMenuButton("Options->Quit", "quit");
+
+        /*
         addMenuButton("Options->Undo", "undo");
         addMenuButton("Options->New Game", "newGame");*/
         _display = new GameDisplay(game);
@@ -39,9 +44,22 @@ public class ChessGUI extends TopLevel {
     }*/
 
     /** Respond to the "Quit" button. */
-   /* public void quit(String dummy) {
+    public void quit(String dummy) {
+        closeChat();
         _game.quit();
-    }*/
+    }
+
+    public void chat(String dummy) {
+        chat = new Chat();
+    }
+
+    public void closeChat () {
+        if (chat != null) chat.dispose();
+    }
+
+    public void stats(String dummy) {
+        System.out.println("stats");
+    }
 
     /** Respond to the "Undo" button. */
    /* public void undo(String dummy) {
@@ -80,13 +98,15 @@ public class ChessGUI extends TopLevel {
                 if (_game.inCheck(_game.turn())) {
                     label = "CHECKMATE, " + _game.turn().opposite().string()
                             + " wins.";
-                } else {
+                }
+                else {
                     label = "STALEMATE, game ends in draw.";
                 }
             } else {
                 label = _game.turn().string() + "'s turn.";
             }
-        } else {
+        }
+        else {
             label = "Invalid Move. " + _game.turn().string() + "'s turn.";
         }
         setLabel("turn", label);
@@ -98,5 +118,7 @@ public class ChessGUI extends TopLevel {
 
     /** The game being consulted. */
     private final Game _game;
+
+    private Chat chat = null;
 
 }
