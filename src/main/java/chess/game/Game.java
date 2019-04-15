@@ -26,15 +26,16 @@ import static chess.pieces.PieceColor.WHITE;
 public class Game {
 
 
-    /** A game of 2-player chess, displayed in a GUI. */
-    public Game() {
+    /** A game of 2-player chess, displayed in a GUI. 
+     * @throws InterruptedException */
+    public Game(PieceColor pieceColor) throws InterruptedException {
         _moves = new ArrayList<Move>();
-        _gui = new ChessGUI("Chess", this);
-        newGame();
+        _gui = new ChessGUI("Chess", this, pieceColor);
+        newGame(pieceColor);
     }
 
     /** Clears the game and starts a new one. */
-    public void newGame() {
+    public void newGame(PieceColor pieceColor) {
         initializeBoard();
         _moves.clear();
         _turn = WHITE;
@@ -242,11 +243,21 @@ public class Game {
 
     /** The GUI displayed to the player. */
     @SuppressWarnings("unused")
-	private ChessGUI _gui;
+	public ChessGUI _gui;
 
     /** The color to move next. */
-    private PieceColor _turn;
-
+    public PieceColor _turn;
+    
+    public void whiteTurn() {
+    	
+    	_turn = WHITE;
+    }
+    
+    public void blackTurn() {
+    	
+    	_turn = BLACK;
+    }
+    
     /** An ordered list of the moves made in the game. */
     private List<Move> _moves;
 

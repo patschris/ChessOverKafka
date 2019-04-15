@@ -62,7 +62,7 @@ public class Pad extends Widget {
         this.me.repaint();
     }
 
-    protected void setMouseHandler(String event, Object receiver, String funcName) {
+    public void setMouseHandler(String event, Object receiver, String funcName) {
         if (!this.eventMap.containsKey(event)) {
             throw new IllegalArgumentException("Unknown event: " + event);
         }

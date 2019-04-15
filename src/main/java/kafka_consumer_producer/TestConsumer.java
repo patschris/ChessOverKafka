@@ -12,7 +12,7 @@ public class TestConsumer {
 	@SuppressWarnings({ "deprecation", "rawtypes" })
 	public static void main(String[] args) {
 		
-		Consumer<Long, String> consumer = ConsumerCreator.createConsumer("demo_topic");
+		Consumer<Long, String> consumer = ConsumerCreator.createConsumer("demo_topic_2");
 
 		while (true) {
 
@@ -39,11 +39,11 @@ public class TestConsumer {
 
 			consumer.commitAsync();
 			
-			break;
+			//break;
 
 		}
 
-		consumer.close();
+		//consumer.close();
 
 	}
 
