@@ -83,7 +83,7 @@ class Register extends JFrame {
 		userField.addKeyListener(new KeyboardListener());	// sets a keylistener for enter
 		userField.setColumns(100);			//	adds a username text field
 		userField.setSize(400, 30);		//	sets its size and location
-		userField.setLocation(200, 80);	//
+		userField.setLocation(250, 80);	//
 		add(username);	//	adds username label and field
 		add(userField);	//	to this window
 	}
@@ -99,7 +99,7 @@ class Register extends JFrame {
 		passwordField.addKeyListener(new KeyboardListener());	// adds key listener for enter
 		passwordField.setColumns(100);			//	adds password field
 		passwordField.setSize(400, 30);		//	sets its size and location
-		passwordField.setLocation(200, 120);
+		passwordField.setLocation(250, 120);
 		add(password);	//	adds password label and
 		add(passwordField);	//	password field to this window
 	}
@@ -115,7 +115,7 @@ class Register extends JFrame {
 		repeatPasswordField.addKeyListener(new KeyboardListener());	// adds key listener for enter
 		repeatPasswordField.setColumns(100);			//	adds password field
 		repeatPasswordField.setSize(400, 30);		//	sets its size and location
-		repeatPasswordField.setLocation(200, 160);
+		repeatPasswordField.setLocation(250, 160);
 		add(repeatPassword);	//	adds password label and
 		add(repeatPasswordField);	//	password field to this window
 	}
@@ -126,12 +126,12 @@ class Register extends JFrame {
 	private void addButtons(){
 		JButton clearButton = new JButton("Clear");		//	creates Clear button,
 		clearButton.setSize(100, 30);		//	sets its size and location
-		clearButton.setLocation(350, 220);
+		clearButton.setLocation(400, 220);
 		clearButton.setActionCommand("Clear");	// sets action command for Cancel button
 		clearButton.addActionListener(new RegisterListeners());	// sets listener for Cancel button
 		JButton registerButton = new JButton("Register");		// 	creates Login button
 		registerButton.setSize(100, 30);		
-		registerButton.setLocation(500, 220);
+		registerButton.setLocation(550, 220);
 		registerButton.setActionCommand("Register");	// sets action command for Sumbit button
 		registerButton.addActionListener(new RegisterListeners());	// sets listener for Submit button
 		JButton backButton = new JButton("< Back");		//	creates Back button,
