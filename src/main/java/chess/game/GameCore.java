@@ -1,6 +1,7 @@
 package chess.game;
 
 
+import java.sql.Time;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -31,11 +32,11 @@ public class GameCore {
 	Game game;
 
 
-	public GameCore(PieceColor pieceColor, Game game, String blk_cns, String wht_cns) {
+	public GameCore(PieceColor pieceColor, Game game, String whitewrt, String blackwrt) {
 		this.black_producer = ProducerCreator.createProducer();
-		this.black_consumer = ConsumerCreator.createConsumer(blk_cns);
+		this.black_consumer = ConsumerCreator.createConsumer(whitewrt);
 		this.white_producer = ProducerCreator.createProducer();
-		this.white_consumer = ConsumerCreator.createConsumer(wht_cns);
+		this.white_consumer = ConsumerCreator.createConsumer(blackwrt);
 		this.pieceColor = pieceColor;
 		this.game = game;
 	}
@@ -51,18 +52,23 @@ public class GameCore {
 			while(true) {
 
 				String dest_str = null;
-
+				
+				System.out.println("Waiting For Message!");
+				
+				
 				while (true) {
-					ConsumerRecords<Long, String> consumerRecords = black_consumer.poll(10);
-					if (consumerRecords.count() == 0) { 
+					ConsumerRecords<Long, String> consumerRecords = black_consumer.poll(1);
+					if (consumerRecords.count() == 0) {
 						continue;
 					}
 					for(ConsumerRecord<Long, String> record: consumerRecords) {
 						dest_str = (String) record.value();
+						System.out.println(dest_str);
 						//JOptionPane.showMessageDialog(null, record.value());	
 					}
 					// commits the offset of record to broker.
 					black_consumer.commitAsync();
+					//black_consumer.close();
 					break;
 				}
 
@@ -76,10 +82,11 @@ public class GameCore {
 				
 				
 				//black's turn
-				game._gui.setMHmouse();				
-
+				game._gui.setMHmouse();
+				
+				
 				while(true) {
-
+					
 					TimeUnit.SECONDS.sleep(1);
 
 					//try to send message to black consumer
@@ -94,7 +101,7 @@ public class GameCore {
 
 						String dest_str2 = gson.toJson(dest2);
 
-						ProducerRecord<Long, String> record2 = new ProducerRecord("demo_topic_2" , dest_str2);
+						ProducerRecord<Long, String> record2 = new ProducerRecord("blackwrt" , dest_str2);
 						try {
 							RecordMetadata metadata2 = black_producer.send(record2).get();
 						} catch (InterruptedException | ExecutionException e) {
@@ -114,17 +121,18 @@ public class GameCore {
 
 			}
 		}
+		
 		else if(pieceColor.equals(PieceColor.WHITE)) {
-
+			
 			game._gui.setMHmouse();
+			
 			while(true) {
-				
-				
+							
 				//try to send
 				while(true) {
-
+					
 					TimeUnit.SECONDS.sleep(1);
-
+					
 					//try to send message to black consumer
 					if(game._gui.getFlag() != 1) {
 						//System.out.println(game._gui.getFlag());
@@ -138,7 +146,7 @@ public class GameCore {
 						Gson gson = new Gson();
 						String dest_str = gson.toJson(dest);
 
-						ProducerRecord<Long, String> record = new ProducerRecord("demo_topic" , dest_str);
+						ProducerRecord<Long, String> record = new ProducerRecord("whitewrt" , dest_str);
 						try {
 							RecordMetadata metadata = white_producer.send(record).get();
 						} catch (InterruptedException | ExecutionException e) {
@@ -155,19 +163,25 @@ public class GameCore {
 				
 				game._gui.setMHturn();
 				
+				System.out.println("Waiting For Message!");
+				
 				String dest_str2 = null;
+				
+				
 
-				while (true) {
-					ConsumerRecords<Long, String> consumerRecords2 = white_consumer.poll(10);
+				while(true){
+					ConsumerRecords<Long, String> consumerRecords2 = white_consumer.poll(1);
 					if (consumerRecords2.count() == 0) { 
 						continue;
 					}
 					for(ConsumerRecord<Long, String> record2: consumerRecords2) {
 						dest_str2 = (String) record2.value();
+						System.out.println(dest_str2);
 						//JOptionPane.showMessageDialog(null, record.value());	
 					}
 					// commits the offset of record to broker.
 					white_consumer.commitAsync();
+					//white_consumer.close();
 					break;
 				}
 
@@ -175,10 +189,9 @@ public class GameCore {
 				Destination dest2 = gson.fromJson(dest_str2, Destination.class);
 
 				Piece selected2 = game._gui._game.get(dest2.getInit_x(), dest2.getInit_y());
-				
-				
-				
+								
 				game._gui.repaintReceive(selected2.makeValidMove(dest2.getFin_x(), dest2.getFin_y()));
+				
 				
 				
 				//repeat the procedure
