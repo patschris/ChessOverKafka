@@ -4,6 +4,7 @@ import chess.game.Game;
 import chess.game.GameCore;
 import chess.pieces.PieceColor;
 import gui.Login;
+import gui.Table;
 
 /** Main class of the Chess program.
  * @author Wan Fung Chui
