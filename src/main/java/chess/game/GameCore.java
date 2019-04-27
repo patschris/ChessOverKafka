@@ -32,18 +32,17 @@ public class GameCore {
 	Game game;
 
 
-	public GameCore(PieceColor pieceColor, Game game, String whitewrt, String blackwrt) {
-		this.black_producer = ProducerCreator.createProducer();
-		this.black_consumer = ConsumerCreator.createConsumer(whitewrt);
-		this.white_producer = ProducerCreator.createProducer();
-		this.white_consumer = ConsumerCreator.createConsumer(blackwrt);
+	public GameCore(PieceColor pieceColor, Game game, String WwritesBreads, String BwritesWreads) {		
 		this.pieceColor = pieceColor;
 		this.game = game;
 	}
 
 	@SuppressWarnings("deprecation")
-	public void startgame() throws InterruptedException {
-
+	public void startgame(String WwritesBreads, String BwritesWreads) throws InterruptedException {
+		
+		this.black_consumer = ConsumerCreator.createConsumer(WwritesBreads);
+		this.black_producer = ProducerCreator.createProducer();
+		
 		if(pieceColor.equals(PieceColor.BLACK)) {
 
 			//white's turn
@@ -59,8 +58,13 @@ public class GameCore {
 				while (true) {
 					ConsumerRecords<Long, String> consumerRecords = black_consumer.poll(1);
 					if (consumerRecords.count() == 0) {
+						System.out.println("NO message... trying to read from..." + WwritesBreads);
+						TimeUnit.SECONDS.sleep(1);
 						continue;
 					}
+					
+					System.out.println("Black is reading from : " + WwritesBreads);
+					
 					for(ConsumerRecord<Long, String> record: consumerRecords) {
 						dest_str = (String) record.value();
 						System.out.println(dest_str);
@@ -87,7 +91,7 @@ public class GameCore {
 				
 				while(true) {
 					
-					TimeUnit.SECONDS.sleep(1);
+					Thread.sleep(30);
 
 					//try to send message to black consumer
 					if(game._gui.getFlag() != 1) {
@@ -100,8 +104,10 @@ public class GameCore {
 						Destination dest2 = new Destination(game._gui.getInit_x(), game._gui.getInit_y(), game._gui.getReleasedX() , game._gui.getReleasedY());
 
 						String dest_str2 = gson.toJson(dest2);
-
-						ProducerRecord<Long, String> record2 = new ProducerRecord("blackwrt" , dest_str2);
+						
+						System.out.println("Black is writting in : " + BwritesWreads);
+						
+						ProducerRecord<Long, String> record2 = new ProducerRecord(BwritesWreads , dest_str2);
 						try {
 							RecordMetadata metadata2 = black_producer.send(record2).get();
 						} catch (InterruptedException | ExecutionException e) {
@@ -124,6 +130,9 @@ public class GameCore {
 		
 		else if(pieceColor.equals(PieceColor.WHITE)) {
 			
+			this.white_consumer = ConsumerCreator.createConsumer(BwritesWreads);
+			this.white_producer = ProducerCreator.createProducer();
+			
 			game._gui.setMHmouse();
 			
 			while(true) {
@@ -131,7 +140,7 @@ public class GameCore {
 				//try to send
 				while(true) {
 					
-					TimeUnit.SECONDS.sleep(1);
+					Thread.sleep(30);
 					
 					//try to send message to black consumer
 					if(game._gui.getFlag() != 1) {
@@ -145,8 +154,10 @@ public class GameCore {
 
 						Gson gson = new Gson();
 						String dest_str = gson.toJson(dest);
-
-						ProducerRecord<Long, String> record = new ProducerRecord("whitewrt" , dest_str);
+						
+						System.out.println("White is writting in : " + WwritesBreads);
+						
+						ProducerRecord<Long, String> record = new ProducerRecord(WwritesBreads , dest_str);
 						try {
 							RecordMetadata metadata = white_producer.send(record).get();
 						} catch (InterruptedException | ExecutionException e) {
@@ -172,8 +183,13 @@ public class GameCore {
 				while(true){
 					ConsumerRecords<Long, String> consumerRecords2 = white_consumer.poll(1);
 					if (consumerRecords2.count() == 0) { 
+						TimeUnit.SECONDS.sleep(1);
+						System.out.println("NO message... trying to read from..." + BwritesWreads);
 						continue;
 					}
+					
+					System.out.println("White is reading from : " + BwritesWreads);
+					
 					for(ConsumerRecord<Long, String> record2: consumerRecords2) {
 						dest_str2 = (String) record2.value();
 						System.out.println(dest_str2);
