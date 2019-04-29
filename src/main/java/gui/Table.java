@@ -32,11 +32,14 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 import chess.game.Game;
 import chess.game.GameCore;
@@ -49,6 +52,7 @@ public class Table extends JFrame {
 	private static final long serialVersionUID = 886705961481791855L;
 	private String baseUrl;
 	private String whoAmI;
+	private String opponent;
 	private JLabel title;
 	private JLabel subtitle;
 	private JLabel gifLabel;
@@ -77,7 +81,7 @@ public class Table extends JFrame {
 		getBaseUrl();
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent){
-				removeTable();
+				destroyMyTable();
 				System.exit(0);
 			}
 		});
@@ -126,10 +130,8 @@ public class Table extends JFrame {
 
 	private void addList(){
 		model = new DefaultListModel<String>();
-
 		list = new JList<String>(model);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
 		scrollPane = new JScrollPane(list);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -152,7 +154,6 @@ public class Table extends JFrame {
 		URL url = this.getClass().getResource("/chess/images/gui/refresh.png");
 		ImageIcon icon = new ImageIcon(url);
 		refreshButton = new JButton(icon);
-
 		refreshButton.setSize(50,50);
 		refreshButton.setLocation(560, 120);
 		refreshButton.setActionCommand("Refresh");
@@ -176,16 +177,24 @@ public class Table extends JFrame {
 		}
 	}
 
-	private void removeTable () {
-		Client.create().resource(baseUrl + "/removetable/" + whoAmI).get(ClientResponse.class);
+	private void destroyMyTable () {
+		Client.create().resource(baseUrl + "/undocreatetable/" + whoAmI).get(ClientResponse.class);
 	}
 
-	private void addTable () {
-		Client.create().resource(baseUrl + "/newtable/" + whoAmI).get(ClientResponse.class);
+	private void createMyTable () {
+		Client.create().resource(baseUrl + "/createtable/" + whoAmI).get(ClientResponse.class);
 	}
 
 	private void addTopics () {
 		Client.create().resource(baseUrl + "/createtopics/" + whoAmI).get(ClientResponse.class);
+	}
+
+	private void createNewGameTable() {
+		ObjectNode objectNode = new ObjectMapper().createObjectNode();
+		objectNode.put("white", whoAmI);
+		objectNode.put("black",  opponent);
+		WebResource webResource = Client.create().resource(baseUrl + "/newgametable");
+		webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
 	}
 
 	private void getOpponents () {
@@ -193,8 +202,8 @@ public class Table extends JFrame {
 		JsonArray players = new JsonParser().parse(response.getEntity(String.class)).getAsJsonArray();
 		model.clear();
 		for (JsonElement player:players) {
-			String name = player.getAsJsonObject().get("name").getAsString();
-			model.addElement(name);
+			String optionalOpponent = player.getAsJsonObject().get("name").getAsString();
+			model.addElement(optionalOpponent);
 		}
 	}
 
@@ -226,10 +235,8 @@ public class Table extends JFrame {
 			gifLabel.setVisible(true);
 			new SwingWorker<Void, Void>() {
 				protected Void doInBackground() throws InterruptedException {
-					addTable();
-
+					createMyTable();
 					addTopics();
-
 
 					//create the white_consumer and wait for someone to join you
 					Consumer<Long, String> white_consumer = ConsumerCreator.createConsumer(whoAmI);
@@ -251,26 +258,19 @@ public class Table extends JFrame {
 						}
 						// commits the offset of record to broker.
 						white_consumer.commitAsync();
-
 						break;
 					}
-
 					white_consumer.close();
-
-					String opponent = msg;
-
+					opponent = msg;
 					System.out.println("Iam: " + whoAmI);
 					System.out.println("Opponent: " + opponent);
-
 					System.out.println("Ready to play!");
-
 					dispose();
-
-
+					createNewGameTable();
+					destroyMyTable();
 					Game g = new Game(PieceColor.WHITE);
 					GameCore gamec = new GameCore(PieceColor.WHITE, g, whoAmI, opponent);
 					gamec.startgame(whoAmI, opponent);
-
 					return null;
 				}
 
@@ -282,11 +282,7 @@ public class Table extends JFrame {
 		}
 
 		private void onJoinTableSelected(){
-			subtitle.setText("Select an opponent");
-			scrollPane.setVisible(true);
-			clearButton.setVisible(true);
-			submitButton.setVisible(true);
-			refreshButton.setVisible(true);
+
 			new SwingWorker<Void, Void>() {
 				protected Void doInBackground()  {
 					getOpponents();
@@ -295,7 +291,11 @@ public class Table extends JFrame {
 
 				@Override
 				protected void done() {
-
+					subtitle.setText("Select an opponent");
+					scrollPane.setVisible(true);
+					clearButton.setVisible(true);
+					submitButton.setVisible(true);
+					refreshButton.setVisible(true);
 				}
 			}.execute();
 		}

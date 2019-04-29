@@ -31,9 +31,6 @@ import security.SecurePassword;
 
 class Register extends JFrame {
 
-	/**
-	 * identifier for this window.
-	 */
 	private static final long serialVersionUID = 4110874552205024327L;
 	private JTextField userField;
 	private JTextField passwordField;
@@ -58,10 +55,10 @@ class Register extends JFrame {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
 		setResizable(false);
-		
+
 		setVisible(true);
 	}
-	
+
 	/**
 	 * 	Creating a label to inform the user.
 	 */
@@ -71,7 +68,7 @@ class Register extends JFrame {
 		title.setLocation(300, 15);
 		add(title);
 	}
-	
+
 	/**
 	 * 	Label used for Username field.
 	 */
@@ -79,7 +76,7 @@ class Register extends JFrame {
 		JLabel username = new JLabel("Pick username");	// 	adds a Username label
 		username.setSize(800,80);			//	setting its size and
 		username.setLocation(60,55);		//	location
-		userField =new JTextField();		//	adds text field for username
+		userField = new JTextField();		//	adds text field for username
 		userField.addKeyListener(new KeyboardListener());	// sets a keylistener for enter
 		userField.setColumns(100);			//	adds a username text field
 		userField.setSize(400, 30);		//	sets its size and location
@@ -87,7 +84,7 @@ class Register extends JFrame {
 		add(username);	//	adds username label and field
 		add(userField);	//	to this window
 	}
-	
+
 	/**
 	 * Label user for password field.
 	 */
@@ -95,7 +92,7 @@ class Register extends JFrame {
 		JLabel password = new JLabel("Type your password");	//	adds a password label
 		password.setSize(800,90);			//	sets its size and location
 		password.setLocation(60,90);
-		passwordField =new JPasswordField();	//	adds a password field
+		passwordField = new JPasswordField();	//	adds a password field
 		passwordField.addKeyListener(new KeyboardListener());	// adds key listener for enter
 		passwordField.setColumns(100);			//	adds password field
 		passwordField.setSize(400, 30);		//	sets its size and location
@@ -119,7 +116,7 @@ class Register extends JFrame {
 		add(repeatPassword);	//	adds password label and
 		add(repeatPasswordField);	//	password field to this window
 	}
-	
+
 	/**
 	 * Buttons of the <code>Login</code> window. 
 	 */
@@ -146,7 +143,7 @@ class Register extends JFrame {
 
 
 	}
-	
+
 	/**
 	 * Code executed when enter pressed or when Login button pressed
 	 */
@@ -161,7 +158,7 @@ class Register extends JFrame {
 			JOptionPane.showMessageDialog(this, "Passwords need to match\nPlease try again");
 		}
 		else {
-	        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+			ObjectNode objectNode = new ObjectMapper().createObjectNode();
 			objectNode.put("name", userField.getText());
 			objectNode.put("password",  SecurePassword.sha256(passwordField.getText()));
 			clear();
@@ -183,7 +180,7 @@ class Register extends JFrame {
 			}
 		}
 	}
-	
+
 	/**
 	 * On Clear button pressed 
 	 */
@@ -192,7 +189,7 @@ class Register extends JFrame {
 		passwordField.setText("");
 		repeatPasswordField.setText("");
 	}
-	
+
 	/**
 	 * On Back button pressed 
 	 */
@@ -200,12 +197,12 @@ class Register extends JFrame {
 		dispose();
 		new Login();
 	}
-	
+
 	/** 
 	 * Keyboard listener for <code>Login</code> window.
 	 */
 	private class KeyboardListener implements KeyListener {
-	
+
 		@Override
 		public void keyPressed(KeyEvent keyEvent) {
 			if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER)
@@ -218,21 +215,24 @@ class Register extends JFrame {
 		@Override
 		public void keyTyped(KeyEvent keyEvent) {}
 	}
-	
+
 	/** 
 	 * Listener for Register and Clear buttons.
 	 * http://www.tutorialspoint.com/swing/swing_event_handling.htm
 	 */
 	private class RegisterListeners implements ActionListener {
-		
+
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
-			if (actionEvent.getActionCommand().equals("Register"))
+			if (actionEvent.getActionCommand().equals("Register")) {
 				enterPressed();
-			else if (actionEvent.getActionCommand().equals("Clear"))
+			}
+			else if (actionEvent.getActionCommand().equals("Clear")) {
 				clear();
-			else
+			}
+			else {
 				back();
+			}
 		}
 	}
 }
