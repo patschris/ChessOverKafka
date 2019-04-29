@@ -1,22 +1,23 @@
 package chess.game;
 
+import static chess.pieces.PieceColor.BLACK;
+import static chess.pieces.PieceColor.WHITE;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import chess.chessgui.ChessGUI;
-import chess.chessgui.GameDisplay;
 import chess.moves.DoubleMove;
 import chess.moves.Move;
 import chess.moves.SingleMove;
-import chess.pieces.*;
-import gui.Chat;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.List;
-import java.util.ArrayList;
-
-import static chess.pieces.PieceColor.BLACK;
-import static chess.pieces.PieceColor.WHITE;
+import chess.pieces.Bishop;
+import chess.pieces.King;
+import chess.pieces.Knight;
+import chess.pieces.Pawn;
+import chess.pieces.Piece;
+import chess.pieces.PieceColor;
+import chess.pieces.Queen;
+import chess.pieces.Rook;
 
 
 /** Represents a game of chess with a board and GUI.
@@ -242,8 +243,7 @@ public class Game {
     private Piece[][] _board;
 
     /** The GUI displayed to the player. */
-    @SuppressWarnings("unused")
-	public ChessGUI _gui;
+    public ChessGUI _gui;
 
     /** The color to move next. */
     public PieceColor _turn;

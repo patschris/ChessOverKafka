@@ -16,7 +16,8 @@ import static chess.chessgui.GameDisplay.BOARD;
 
 public class Chat extends JFrame {
 
-    private JTextPane textArea;
+	private static final long serialVersionUID = -3689107953291083901L;
+	private JTextPane textArea;
     private JTextField messageField;
     private JButton sendButton;
     private ChessGUI chessGUI;
@@ -128,11 +129,13 @@ public class Chat extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            try {
-                enterPressed();
-            } catch (BadLocationException e) {
-                e.printStackTrace();
-            }
+                try {
+					enterPressed();
+				} 
+                catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+          
         }
 
     }

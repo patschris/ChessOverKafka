@@ -1,29 +1,7 @@
 package gui;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-
-import chess.game.Game;
-import chess.game.GameCore;
-import chess.pieces.PieceColor;
-import kafka_consumer_producer.ConsumerCreator;
-import kafka_consumer_producer.ProducerCreator;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import javax.swing.*;
-
-import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
-
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -33,18 +11,50 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
+
+import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingWorker;
+
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+
+import chess.game.Game;
+import chess.game.GameCore;
+import chess.pieces.PieceColor;
+import kafka_consumer_producer.ConsumerCreator;
+import kafka_consumer_producer.ProducerCreator;
 
 public class Table extends JFrame {
 
+	private static final long serialVersionUID = 886705961481791855L;
 	private String baseUrl;
 	private String whoAmI;
 	private JLabel title;
 	private JLabel subtitle;
 	private JLabel gifLabel;
 	private JComboBox<String> dropdown;
-	private DefaultListModel model;
-	private JList list;
+	private DefaultListModel<String> model;
+	private JList<String> list;
 	private JScrollPane scrollPane;
 	private JButton clearButton;
 	private JButton submitButton;
@@ -115,9 +125,9 @@ public class Table extends JFrame {
 	}
 
 	private void addList(){
-		model = new DefaultListModel();
+		model = new DefaultListModel<String>();
 
-		list = new JList(model);
+		list = new JList<String>(model);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		scrollPane = new JScrollPane(list);
@@ -183,7 +193,8 @@ public class Table extends JFrame {
 		JsonArray players = new JsonParser().parse(response.getEntity(String.class)).getAsJsonArray();
 		model.clear();
 		for (JsonElement player:players) {
-			model.addElement(player.getAsJsonObject().get("name").getAsString());
+			String name = player.getAsJsonObject().get("name").getAsString();
+			model.addElement(name);
 		}
 	}
 
@@ -192,9 +203,9 @@ public class Table extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
+			@SuppressWarnings("unchecked")
 			JComboBox<String> combo = (JComboBox<String>) actionEvent.getSource();
 			String selectedOption = (String) combo.getSelectedItem();
-
 			if (selectedOption.equals("Create table")) {
 				anOptionSelected();
 				onCreateTableSelected();
@@ -228,6 +239,7 @@ public class Table extends JFrame {
 					System.out.println("Waiting For Message!");
 
 					while (true) {
+						@SuppressWarnings("deprecation")
 						ConsumerRecords<Long, String> consumerRecords = white_consumer.poll(10);
 						if (consumerRecords.count() == 0) {
 							continue;
@@ -311,8 +323,7 @@ public class Table extends JFrame {
 
 					Producer<Long, String> black_producer = ProducerCreator.createProducer();
 
-					@SuppressWarnings("unchecked")
-					ProducerRecord<Long, String> record = new ProducerRecord(opponent , whoAmI);
+					ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(opponent , whoAmI);
 
 					black_producer.send(record);
 

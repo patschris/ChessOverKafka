@@ -19,12 +19,12 @@ public class ChatMemory {
         return instance;
     }
 
-    public static void add(Message m) {
+    public void add(Message m) {
         messages.add(m);
     }
 
     /*  https://stackoverflow.com/questions/4059198/jtextpane-appending-a-new-string  */
-    public static void retrieveHistory (String me, JTextPane pane) throws BadLocationException {
+    public void retrieveHistory (String me, JTextPane pane) throws BadLocationException {
         StyledDocument doc = pane.getStyledDocument();
         SimpleAttributeSet keyWord = new SimpleAttributeSet();
         for (Message m : messages) {

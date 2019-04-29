@@ -1,15 +1,15 @@
 package chess.chessgui;
 
-import chess.game.Game;
-import chess.pieces.Piece;
-
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 
-import java.io.InputStream;
-import java.io.IOException;
+import chess.game.Game;
+import chess.pieces.Piece;
 
 /** A widget for the display of the Chess GUI.
  *  @author Wan Fung Chui

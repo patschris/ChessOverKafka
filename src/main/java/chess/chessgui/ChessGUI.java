@@ -125,11 +125,9 @@ public class ChessGUI extends TopLevel {
 	}
 
 	/** Repaints the GUI display, with a move invalid if not VALIDMOVE. */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int repaintReceive(boolean validMove) {
 		String label;
 		if (validMove) {
-			
 			if (_game.noMoves()) {
 				if (_game.inCheck(_game.turn())) {
 					label = "CHECKMATE, " + _game.turn().opposite().string()
