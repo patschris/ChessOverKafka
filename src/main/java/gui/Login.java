@@ -54,12 +54,6 @@ public class Login extends JFrame {
 		addPassword();
 		addButtons();
 		addRegistrationLink();
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent windowEvent){
-				// program ends if Login window is closed
-				System.exit(0);
-			}        
-		}); 
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
 		setResizable(false);
@@ -115,13 +109,11 @@ public class Login extends JFrame {
         JButton cancelButton = new JButton("Clear");		//	creates Clear button,
 		cancelButton.setSize(100, 30);		//	sets its size and location
 		cancelButton.setLocation(250, 180);
-		cancelButton.setActionCommand("Clear");	// sets action command for Cancel button
-		cancelButton.addActionListener(new LoginListeners());	// sets listener for Cancel button
+		cancelButton.addActionListener(event -> clear());	// sets listener for Cancel button
         JButton submitButton = new JButton("Login");		// 	creates Login button
 		submitButton.setSize(100, 30);		
 		submitButton.setLocation(400, 180);
-		submitButton.setActionCommand("Login");	// sets action command for Sumbit button
-		submitButton.addActionListener(new LoginListeners());	// sets listener for Submit button
+		submitButton.addActionListener(event -> enterPressed());	// sets listener for Submit button
 		add(cancelButton);	//
 		add(submitButton);	// adds Cancel and Sumbit buttons to this window
 	}
@@ -192,25 +184,7 @@ public class Login extends JFrame {
 		@Override
 		public void keyTyped(KeyEvent keyEvent) {}
 	}
-	
-	/** 
-	 * Listener for Login and Clear buttons.
-	 * http://www.tutorialspoint.com/swing/swing_event_handling.htm
-	 */
-	private class LoginListeners implements ActionListener {
-		
-		@Override
-		public void actionPerformed(ActionEvent actionEvent) {
-			if (actionEvent.getActionCommand().equals("Login")) {
-				enterPressed();
-			}
-			else {
-				clear();
-			}
-		}
-		
-	}
-	
+
 	private class RegisterListener implements MouseListener {
 
 		@Override

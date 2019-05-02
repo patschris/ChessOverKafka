@@ -129,8 +129,8 @@ public class Table extends JFrame {
 	}
 
 	private void addList(){
-		model = new DefaultListModel<String>();
-		list = new JList<String>(model);
+		model = new DefaultListModel<>();
+		list = new JList<>(model);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane = new JScrollPane(list);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -144,20 +144,19 @@ public class Table extends JFrame {
 		clearButton = new JButton("Clear");		//	creates Clear button,
 		clearButton.setSize(100, 30);		//	sets its size and location
 		clearButton.setLocation(220, 225);
-		clearButton.setActionCommand("Clear");	// sets action command for Cancel button
-		clearButton.addActionListener(new ButtonPressedListener(this));	// sets listener for Cancel button
+		clearButton.addActionListener(event -> list.clearSelection());	// sets listener for Cancel button
 		submitButton = new JButton("Play");		// 	creates Login button
 		submitButton.setSize(100, 30);
 		submitButton.setLocation(350, 225);
 		submitButton.setActionCommand("Play");	// sets action command for Sumbit button
-		submitButton.addActionListener(new ButtonPressedListener(this));	// sets listener for Submit button
+		submitButton.addActionListener(event -> selectOpponent());	// sets listener for Submit button
 		URL url = this.getClass().getResource("/chess/images/gui/refresh.png");
 		ImageIcon icon = new ImageIcon(url);
 		refreshButton = new JButton(icon);
 		refreshButton.setSize(50,50);
 		refreshButton.setLocation(560, 120);
 		refreshButton.setActionCommand("Refresh");
-		refreshButton.addActionListener(new ButtonPressedListener(this));
+		refreshButton.addActionListener(event -> getOpponents());
 		add(clearButton);
 		add(submitButton);
 		add(refreshButton);
@@ -208,6 +207,44 @@ public class Table extends JFrame {
 	}
 
 
+	private void selectOpponent() {
+		String opponent = list.getSelectedValue();
+		if (opponent == null) {
+			JOptionPane.showMessageDialog(this, "No opponent selected");
+		}
+		else {
+			addTopics();
+			//send your name to your opponent
+			Producer<Long, String> black_producer = ProducerCreator.createProducer();
+			ProducerRecord<Long, String> record = new ProducerRecord<>(opponent , whoAmI);
+			black_producer.send(record);
+			black_producer.close();
+			System.out.println("Iam: " + whoAmI);
+			System.out.println("Opponent: " + opponent);
+
+			//begin the game
+			System.out.println("Ready to play!");
+			dispose();
+			new SwingWorker<Void, Void>() {
+				@Override
+				protected Void doInBackground() throws Exception {
+					Game g = new Game(PieceColor.BLACK);
+					GameCore gamec = new GameCore(PieceColor.BLACK, g, opponent, whoAmI);
+					gamec.startgame(opponent , whoAmI);
+					return null;
+				}
+				@Override
+				protected void done() {
+				}
+			}.execute();
+
+
+		}
+	}
+
+
+
+
 	private class DropDownListener implements ActionListener {
 
 		@Override
@@ -252,7 +289,7 @@ public class Table extends JFrame {
 							continue;
 						}
 						for(ConsumerRecord<Long, String> record: consumerRecords) {
-							msg = (String) record.value();
+							msg = record.value();
 							System.out.println(msg);
 							//JOptionPane.showMessageDialog(null, record.value());	
 						}
@@ -301,67 +338,4 @@ public class Table extends JFrame {
 		}
 	}
 
-	private class ButtonPressedListener implements ActionListener {
-
-		private Table window;
-
-		ButtonPressedListener (Table table) {
-			this.window = table;
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent actionEvent) {
-			if (actionEvent.getActionCommand().equals("Play")) {
-				String opponent = (String) list.getSelectedValue();
-				if (opponent == null) {
-					JOptionPane.showMessageDialog(this.window, "No opponent selected");
-				}
-				else {
-					addTopics();
-
-					//send your name to your opponent
-
-					Producer<Long, String> black_producer = ProducerCreator.createProducer();
-
-					ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(opponent , whoAmI);
-
-					black_producer.send(record);
-
-					black_producer.close();
-
-					System.out.println("Iam: " + whoAmI);
-					System.out.println("Opponent: " + opponent);
-
-
-					//begin the game
-					System.out.println("Ready to play!");
-
-					dispose();
-
-					new SwingWorker<Void, Void>() {
-
-						@Override
-						protected Void doInBackground() throws Exception {
-							Game g = new Game(PieceColor.BLACK);
-							GameCore gamec = new GameCore(PieceColor.BLACK, g, opponent, whoAmI);
-							gamec.startgame(opponent , whoAmI);
-							return null;
-						}
-
-						@Override
-						protected void done() {
-						}
-					}.execute();
-
-
-				}
-			}
-			else if (actionEvent.getActionCommand().equals("Refresh")) {
-				getOpponents();
-			}
-			else {
-				list.clearSelection();
-			}
-		}
-	}
 }

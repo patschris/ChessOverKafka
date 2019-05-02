@@ -46,16 +46,9 @@ class Register extends JFrame {
 		addPassword();
 		addRepeatPassword();
 		addButtons();
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent windowEvent){
-				// program ends if register window is closed
-				System.exit(0);
-			}        
-		}); 
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
 		setResizable(false);
-
 		setVisible(true);
 	}
 
@@ -125,17 +118,17 @@ class Register extends JFrame {
 		clearButton.setSize(100, 30);		//	sets its size and location
 		clearButton.setLocation(400, 220);
 		clearButton.setActionCommand("Clear");	// sets action command for Cancel button
-		clearButton.addActionListener(new RegisterListeners());	// sets listener for Cancel button
+		clearButton.addActionListener(event -> clear());	// sets listener for Cancel button
 		JButton registerButton = new JButton("Register");		// 	creates Login button
 		registerButton.setSize(100, 30);		
 		registerButton.setLocation(550, 220);
 		registerButton.setActionCommand("Register");	// sets action command for Sumbit button
-		registerButton.addActionListener(new RegisterListeners());	// sets listener for Submit button
+		registerButton.addActionListener(event -> enterPressed());	// sets listener for Submit button
 		JButton backButton = new JButton("< Back");		//	creates Back button,
 		backButton.setSize(100, 30);		//	sets its size and location
 		backButton.setLocation(60, 220);
 		backButton.setActionCommand("Back");	// sets action command for Back button
-		backButton.addActionListener(new RegisterListeners());	// sets listener for Back button
+		backButton.addActionListener(event -> back());	// sets listener for Back button
 
 		add(clearButton);
 		add(registerButton);
@@ -214,25 +207,5 @@ class Register extends JFrame {
 
 		@Override
 		public void keyTyped(KeyEvent keyEvent) {}
-	}
-
-	/** 
-	 * Listener for Register and Clear buttons.
-	 * http://www.tutorialspoint.com/swing/swing_event_handling.htm
-	 */
-	private class RegisterListeners implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent actionEvent) {
-			if (actionEvent.getActionCommand().equals("Register")) {
-				enterPressed();
-			}
-			else if (actionEvent.getActionCommand().equals("Clear")) {
-				clear();
-			}
-			else {
-				back();
-			}
-		}
 	}
 }
