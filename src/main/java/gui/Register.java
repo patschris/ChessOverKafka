@@ -117,24 +117,18 @@ class Register extends JFrame {
 		JButton clearButton = new JButton("Clear");		//	creates Clear button,
 		clearButton.setSize(100, 30);		//	sets its size and location
 		clearButton.setLocation(400, 220);
-		clearButton.setActionCommand("Clear");	// sets action command for Cancel button
 		clearButton.addActionListener(event -> clear());	// sets listener for Cancel button
 		JButton registerButton = new JButton("Register");		// 	creates Login button
 		registerButton.setSize(100, 30);		
 		registerButton.setLocation(550, 220);
-		registerButton.setActionCommand("Register");	// sets action command for Sumbit button
 		registerButton.addActionListener(event -> enterPressed());	// sets listener for Submit button
 		JButton backButton = new JButton("< Back");		//	creates Back button,
 		backButton.setSize(100, 30);		//	sets its size and location
 		backButton.setLocation(60, 220);
-		backButton.setActionCommand("Back");	// sets action command for Back button
 		backButton.addActionListener(event -> back());	// sets listener for Back button
-
 		add(clearButton);
 		add(registerButton);
 		add(backButton); // adds Cancel and Sumbit buttons to this window
-
-
 	}
 
 	/**

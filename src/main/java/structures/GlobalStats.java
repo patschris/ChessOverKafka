@@ -28,6 +28,4 @@ public class GlobalStats {
     public float getAvgMoves() {
         return avgMoves;
     }
-
-
 }

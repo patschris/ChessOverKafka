@@ -63,6 +63,7 @@ public class Table extends JFrame {
 	private JButton clearButton;
 	private JButton submitButton;
 	private JButton refreshButton;
+	private JButton statsButton;
 
 	public Table(String userLoggedIn) {
 		super("Table");
@@ -155,12 +156,18 @@ public class Table extends JFrame {
 		refreshButton.setSize(50,50);
 		refreshButton.setLocation(560, 120);
 		refreshButton.addActionListener(event -> getOpponents());
+		statsButton = new JButton("Stats");
+		statsButton.setSize(100, 30);
+		statsButton.setLocation(300, 180);
+		statsButton.addActionListener(event -> {dispose(); new Stats(whoAmI);});
 		add(clearButton);
 		add(submitButton);
 		add(refreshButton);
+		add(statsButton);
 		clearButton.setVisible(false);
 		submitButton.setVisible(false);
 		refreshButton.setVisible(false);
+		statsButton.setVisible(true);
 	}
 
 	private void getBaseUrl () {
@@ -264,6 +271,7 @@ public class Table extends JFrame {
 		private void onCreateTableSelected(){
 			subtitle.setText("Wait for an opponent");
 			gifLabel.setVisible(true);
+			statsButton.setVisible(false);
 			new SwingWorker<Void, Void>() {
 				protected Void doInBackground() throws InterruptedException {
 					createMyTable();
@@ -318,6 +326,7 @@ public class Table extends JFrame {
 
 				@Override
 				protected void done() {
+					statsButton.setVisible(false);
 					subtitle.setText("Select an opponent");
 					scrollPane.setVisible(true);
 					clearButton.setVisible(true);
