@@ -142,9 +142,9 @@ class Register extends JFrame {
 	 */
 	private void enterPressed () {
 
-		if (userField.getText().isEmpty()) {
+		if (userField.getText().isEmpty() || passwordField.getText().isEmpty()) {
 			clear();
-			JOptionPane.showMessageDialog(this, "Username connot be empty\nPlease try again");
+			JOptionPane.showMessageDialog(this, "Username or password field cannot be empty\nPlease try again");
 		}
 		else if (!passwordField.getText().equals(repeatPasswordField.getText())) {
 			clear();

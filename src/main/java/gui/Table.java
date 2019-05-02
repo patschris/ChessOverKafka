@@ -112,7 +112,7 @@ public class Table extends JFrame {
 	}
 
 	private void createSubtitle (){
-		subtitle=new JLabel();
+		subtitle = new JLabel();
 		subtitle.setSize(300, 30);
 		subtitle.setLocation(270, 35);
 		add(subtitle);
@@ -148,14 +148,12 @@ public class Table extends JFrame {
 		submitButton = new JButton("Play");		// 	creates Login button
 		submitButton.setSize(100, 30);
 		submitButton.setLocation(350, 225);
-		submitButton.setActionCommand("Play");	// sets action command for Sumbit button
 		submitButton.addActionListener(event -> selectOpponent());	// sets listener for Submit button
 		URL url = this.getClass().getResource("/chess/images/gui/refresh.png");
 		ImageIcon icon = new ImageIcon(url);
 		refreshButton = new JButton(icon);
 		refreshButton.setSize(50,50);
 		refreshButton.setLocation(560, 120);
-		refreshButton.setActionCommand("Refresh");
 		refreshButton.addActionListener(event -> getOpponents());
 		add(clearButton);
 		add(submitButton);
@@ -237,12 +235,8 @@ public class Table extends JFrame {
 				protected void done() {
 				}
 			}.execute();
-
-
 		}
 	}
-
-
 
 
 	private class DropDownListener implements ActionListener {
@@ -274,14 +268,10 @@ public class Table extends JFrame {
 				protected Void doInBackground() throws InterruptedException {
 					createMyTable();
 					addTopics();
-
 					//create the white_consumer and wait for someone to join you
 					Consumer<Long, String> white_consumer = ConsumerCreator.createConsumer(whoAmI);
-
 					String msg = "";
-
 					System.out.println("Waiting For Message!");
-
 					while (true) {
 						@SuppressWarnings("deprecation")
 						ConsumerRecords<Long, String> consumerRecords = white_consumer.poll(10);

@@ -1,16 +1,25 @@
 package gui;
 
+import com.google.gson.*;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import structures.GlobalStats;
+import structures.PersonalStats;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Properties;
 
 public class Stats extends JFrame {
 
     private String whoAmI;
     private String baseUrl;
+    private DecimalFormat df = new DecimalFormat("#.#");
+
 
 
     public Stats(String user) {
@@ -84,15 +93,38 @@ public class Stats extends JFrame {
 
 
     private String getGlobalStats () {
-        return "Global stats";
+        ClientResponse response = Client.create().resource(baseUrl + "/gamestats").get(ClientResponse.class);
+        GlobalStats globalStats = new Gson().fromJson(response.getEntity(String.class), GlobalStats.class);
+        StringBuilder stats =  new StringBuilder("<html><body><h2>Global stats</h2>");
+        stats.append("Total games played : " + globalStats.getGamesPlayed() + "<p/>");
+        stats.append("Whites won : " + globalStats.getWhiteWon() + "<p/>");
+        stats.append("Black won : " + globalStats.getBlackWon() + "<p/>");
+        stats.append("Average amount of moves to win : " + df.format(globalStats.getAvgMoves()) + "<p/></body></html>");
+        return stats.toString();
     }
 
     private String getMyStats () {
-        return "my stats";
+        ClientResponse response = Client.create().resource(baseUrl + "/personalstats/" + whoAmI).get(ClientResponse.class);
+        PersonalStats personalStats = new Gson().fromJson(response.getEntity(String.class), PersonalStats.class);
+        StringBuilder stats =  new StringBuilder("<html><body><h2>Your stats</h2>");
+        stats.append("Games played : " + personalStats.getGamesPlayed() + "<p/>");
+        stats.append("Wins : " + personalStats.getGamesWon() + "<p/>");
+        stats.append("Defeats : " + personalStats.getGamesLost() + "<p/>");
+        stats.append("Games played as white : " + personalStats.getWhite() + "<p/>");
+        stats.append("Games played as black : " + personalStats.getBlack() + "<p/>");
+        stats.append("Average amount of moves : " + df.format(personalStats.getAvgMoves()) + "<p/></body></html>");
+        return stats.toString();
     }
 
     private String getTop5 () {
-        return "top 5";
+        ClientResponse response = Client.create().resource(baseUrl + "/top5").get(ClientResponse.class);
+        JsonArray arr = new JsonParser().parse(response.getEntity(String.class)).getAsJsonArray();
+        StringBuilder stats = new StringBuilder("<html><body><h2>Top 5 players by wins</h2>");
+        for (JsonElement player : arr) {
+            JsonObject jsonObject = player.getAsJsonObject();
+            stats.append(jsonObject.get("winner").getAsString()).append(" : ").append(jsonObject.get("wins").getAsString()).append("<p/>");
+        }
+        stats.append("</body></html>");
+        return stats.toString();
     }
-
 }
