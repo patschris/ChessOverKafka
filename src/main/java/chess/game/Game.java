@@ -20,9 +20,6 @@ import chess.pieces.Queen;
 import chess.pieces.Rook;
 
 
-/** Represents a game of chess with a board and GUI.
- *  @author Wan Fung Chui
- */
 
 public class Game {
 	

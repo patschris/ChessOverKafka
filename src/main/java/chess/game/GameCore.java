@@ -1,6 +1,7 @@
 package chess.game;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
@@ -9,7 +10,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.omg.CORBA.portable.InputStream;
 import com.google.gson.Gson;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -326,7 +326,7 @@ public class GameCore {
 	private static String getBaseUrl() {
 		String baseUrl = "";
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		InputStream input = (InputStream) classloader.getResourceAsStream("config.properties");
+		InputStream input = classloader.getResourceAsStream("config.properties");
 		Properties properties = new Properties();
 		try {
 			properties.load(input);

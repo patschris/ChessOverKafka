@@ -1,7 +1,4 @@
-/*
- * Decompiled from UC Berkeley's ucb.gui package.
- * @author P.N. Hilfinger
- */
+
 package chess.chessgui;
 
 import java.awt.GridBagConstraints;

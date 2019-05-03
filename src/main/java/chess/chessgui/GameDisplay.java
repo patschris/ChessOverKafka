@@ -11,9 +11,6 @@ import javax.imageio.ImageIO;
 import chess.game.Game;
 import chess.pieces.Piece;
 
-/** A widget for the display of the Chess GUI.
- *  @author Wan Fung Chui
- */
 public class GameDisplay extends Pad {
 
     /** A factor that can be changed to alter the size of the GUI. */

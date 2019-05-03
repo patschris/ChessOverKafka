@@ -10,9 +10,6 @@ import java.awt.event.MouseEvent;
 import static chess.chessgui.GameDisplay.CELL;
 import static chess.chessgui.GameDisplay.MARGIN;
 
-/** A top-level GUI for Chess.
- *  @author Wan Fung Chui
- */
 
 public class ChessGUI extends TopLevel {
 

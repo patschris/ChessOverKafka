@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import javax.swing.JButton;
@@ -158,14 +159,27 @@ class Register extends JFrame {
 			JOptionPane.showMessageDialog(this, "Passwords need to match\nPlease try again");
 		}
 		else {
-			ObjectNode node = new ObjectMapper().createObjectNode().put("name", username).put("password",  SecurePassword.sha256(password));
-			WebResource webResource = Client.create().resource(baseUrl + "/register");
-			if (webResource.accept("application/json").type("application/json").post(ClientResponse.class, node.toString()).getStatus() == 200) {
-				JOptionPane.showMessageDialog(this, "Registration successful");
-				back();
+			ObjectNode objectNode = new ObjectMapper().createObjectNode();
+			objectNode.put("name", userField.getText());
+			objectNode.put("password",  SecurePassword.sha256(passwordField.getText()));
+			clear();
+			try {
+				ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+			    InputStream input = classloader.getResourceAsStream("config.properties");
+			    Properties properties = new Properties();
+				properties.load(input);
+				WebResource webResource = Client.create().resource(properties.getProperty("restAddress") + "/register");
+				ClientResponse response = webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
+				if (response.getStatus() == 200) {
+					JOptionPane.showMessageDialog(this, "Registration succeeded");
+					back();
+				}
+				else {
+					JOptionPane.showMessageDialog(this, "Username already exists\nPlease try again");
+				}
 			}
-			else {
-				JOptionPane.showMessageDialog(this, "Username already exists\nPlease try again");
+			catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}

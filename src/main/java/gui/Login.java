@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.File;
 import java.util.Properties;
 
@@ -65,12 +66,12 @@ public class Login extends JFrame {
 		title.setLocation(300, 15);
 		add(title);
 	}
-	
+
 	/**
 	 * 	Label used for Username field.
 	 */
 	private void addUsername(){
-        JLabel username = new JLabel("Username");
+		JLabel username = new JLabel("Username");
 		username.setSize(800,80);
 		username.setLocation(80,55);
 		userField = new JTextField();
@@ -86,14 +87,14 @@ public class Login extends JFrame {
 	 * Label user for password field.
 	 */
 	private void addPassword(){
-        JLabel password = new JLabel("Password");
+		JLabel password = new JLabel("Password");
 		password.setSize(800,80);
 		password.setLocation(80,105);
-        passwordField = new JPasswordField();
-        passwordField.addKeyListener(new KeyAdapterListener());
-        passwordField.setColumns(100);
-        passwordField.setSize(400, 30);
-        passwordField.setLocation(200, 130);
+		passwordField = new JPasswordField();
+		passwordField.addKeyListener(new KeyAdapterListener());
+		passwordField.setColumns(100);
+		passwordField.setSize(400, 30);
+		passwordField.setLocation(200, 130);
 		add(password);
 		add(passwordField);
 	}
@@ -121,7 +122,7 @@ public class Login extends JFrame {
 		addCancelButton ();
 		addSubmitButton ();
 	}
-	
+
 	private void addRegistrationLink() {
 		register = new JLabel("<html><u>Click here to register</u></html>");
 		register.setForeground(Color.BLUE);
@@ -132,13 +133,15 @@ public class Login extends JFrame {
 	}
 
 	private void getBaseUrl () {
-		try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
-			Properties properties = new Properties();
-			properties.load(fileInput);
+
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		InputStream input = classloader.getResourceAsStream("config.properties");
+		Properties properties = new Properties();
+		try {
+			properties.load(input);
 			baseUrl = properties.getProperty("restAddress");
-		}
-		catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 	}
 
@@ -156,22 +159,22 @@ public class Login extends JFrame {
 			ObjectNode node = new ObjectMapper().createObjectNode().put("name", username).put("password", SecurePassword.sha256(password));
 			WebResource webResource = Client.create().resource(baseUrl + "/login");
 			switch (webResource.accept("application/json").type("application/json").post(ClientResponse.class, node.toString()).getStatus()) {
-				case 200:
-					dispose();
-					new Table(username);
-					break;
-				case 400:
-					JOptionPane.showMessageDialog(this, "Incorrect username or password\nPlease try again");
-					break;
-				case 401:
-					JOptionPane.showMessageDialog(this, "This user is already logged in\nPlease try again");
-					break;
-				default:
-					JOptionPane.showMessageDialog(this, "An error occurred\nPlease try again");
+			case 200:
+				dispose();
+				new Table(username);
+				break;
+			case 400:
+				JOptionPane.showMessageDialog(this, "Incorrect username or password\nPlease try again");
+				break;
+			case 401:
+				JOptionPane.showMessageDialog(this, "This user is already logged in\nPlease try again");
+				break;
+			default:
+				JOptionPane.showMessageDialog(this, "An error occurred\nPlease try again");
 			}
 		}
-    }
-	
+	}
+
 	/**
 	 * On Clear button pressed 
 	 */

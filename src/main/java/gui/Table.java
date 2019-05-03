@@ -9,6 +9,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -173,14 +174,15 @@ public class Table extends JFrame {
 	}
 
 	private void getBaseUrl () {
-		try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
-			Properties properties = new Properties();
-			properties.load(fileInput);
-			baseUrl = properties.getProperty("restAddress");
-		}
-		catch (IOException e) {
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		InputStream input = classloader.getResourceAsStream("config.properties");
+		Properties properties = new Properties();
+		try {
+			properties.load(input);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		baseUrl = properties.getProperty("restAddress");
 	}
 
 	private void destroyMyTable () {

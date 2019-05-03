@@ -2,10 +2,6 @@ package main;
 
 import gui.Login;
 
-/** Main class of the Chess program.
- * @author Wan Fung Chui
- */
-
 
 public class Main {
 
