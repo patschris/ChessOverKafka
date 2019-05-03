@@ -293,7 +293,8 @@ public class Table extends JFrame {
 			statsButton.setVisible(false);
 			new SwingWorker<Void, Void>() {
 				protected Void doInBackground() throws InterruptedException {
-
+					
+					
 					addTopics();
 					
 					Consumer<Long, String> white_consumer = ConsumerCreator.createConsumer(whoAmI);

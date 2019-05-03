@@ -100,6 +100,7 @@ public class Chat extends JFrame{
 
 	}
 
+	
 
 
 	private void textAreaLabel() throws BadLocationException {

@@ -33,6 +33,7 @@ public class GameDisplay extends Pad {
         setMinimumSize(BOARD, BOARD);
     }
 
+    
     /** Return an Image read from the resource named NAME. */
     private Image getImage(String name) {
         InputStream in = getClass().getResourceAsStream("/chess/images/" + name);

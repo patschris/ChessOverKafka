@@ -36,6 +36,7 @@ public class Game {
         newGame(pieceColor);
     }
 
+    
     /** Clears the game and starts a new one. */
     public void newGame(PieceColor pieceColor) {
         initializeBoard();

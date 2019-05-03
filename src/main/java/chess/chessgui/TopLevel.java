@@ -43,6 +43,7 @@ public class TopLevel implements ActionListener {
 		});
 
 	}
+	
 
 	protected TopLevel(String title, boolean exitOnClose) {
 		this.frame = new JFrame(title);

@@ -181,6 +181,7 @@ public class ChessGUI extends TopLevel {
 		this.releasedX = releasedX;
 	}
 
+	
 	public int getReleasedY() {
 		return releasedY;
 	}

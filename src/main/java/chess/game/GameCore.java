@@ -153,6 +153,7 @@ public class GameCore {
 			}
 
 		}
+		
 
 		else if(pieceColor.equals(PieceColor.WHITE)) {
 			boolean termination = false;
