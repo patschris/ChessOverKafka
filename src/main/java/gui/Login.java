@@ -148,14 +148,12 @@ public class Login extends JFrame {
 	private void enterPressed () {
 		String username = userField.getText();
 		String password = passwordField.getText();
+		clear();
 		if (username.isEmpty() || password.isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Empty username or password field\nPlease try again");
 		}
 		else {
-			ObjectNode node = new ObjectMapper().createObjectNode();
-			node.put("name", username);
-			node.put("password", SecurePassword.sha256(password));
-			clear();
+			ObjectNode node = new ObjectMapper().createObjectNode().put("name", username).put("password", SecurePassword.sha256(password));
 			WebResource webResource = Client.create().resource(baseUrl + "/login");
 			switch (webResource.accept("application/json").type("application/json").post(ClientResponse.class, node.toString()).getStatus()) {
 				case 200:
