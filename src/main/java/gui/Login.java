@@ -178,6 +178,7 @@ public class Login extends JFrame {
 	private void clear () {
 		userField.setText("");
 		passwordField.setText("");
+		userField.requestFocus();
 	}
 
 	/** 

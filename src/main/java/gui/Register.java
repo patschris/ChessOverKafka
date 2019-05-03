@@ -191,6 +191,7 @@ class Register extends JFrame {
 		userField.setText("");
 		passwordField.setText("");
 		repeatPasswordField.setText("");
+		userField.requestFocus();
 	}
 
 	/**
