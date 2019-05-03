@@ -22,11 +22,16 @@ public class ChessGUI extends TopLevel {
 	private int releasedX;
 	private int releasedY;
 	private int flag = 0;
+	public String myself;
+	public String opponent;
 
 	/** A new window with given TITLE and displaying GAME. 
 	 *  */
-	public ChessGUI(String title, Game game, PieceColor pieceColor) throws InterruptedException {
+	public ChessGUI(String title, Game game, PieceColor pieceColor, String myself, String opponent) throws InterruptedException {
 		super(title, true);
+		
+		this.myself = myself;
+		this.opponent = opponent;
 
 		this.pieceColor = pieceColor;
 		_game = game;

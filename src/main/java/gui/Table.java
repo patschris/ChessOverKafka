@@ -238,7 +238,7 @@ public class Table extends JFrame {
 			new SwingWorker<Void, Void>() {
 				@Override
 				protected Void doInBackground() throws Exception {
-					Game g = new Game(PieceColor.BLACK);
+					Game g = new Game(PieceColor.BLACK, whoAmI, opponent);
 					GameCore gamec = new GameCore(PieceColor.BLACK, g, opponent, whoAmI);
 					gamec.startgame(opponent , whoAmI);
 					return null;
@@ -308,7 +308,7 @@ public class Table extends JFrame {
 					dispose();
 					createNewGameTable();
 					destroyMyTable();
-					Game g = new Game(PieceColor.WHITE);
+					Game g = new Game(PieceColor.WHITE, whoAmI, opponent);
 					GameCore gamec = new GameCore(PieceColor.WHITE, g, whoAmI, opponent);
 					gamec.startgame(whoAmI, opponent);
 					return null;
