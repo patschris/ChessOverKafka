@@ -83,6 +83,7 @@ public class Table extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent){
 				destroyMyTable();
+				logout();
 				System.exit(0);
 			}
 		});
@@ -183,6 +184,10 @@ public class Table extends JFrame {
 
 	private void destroyMyTable () {
 		Client.create().resource(baseUrl + "/undocreatetable/" + whoAmI).get(ClientResponse.class);
+	}
+
+	private void logout () {
+		Client.create().resource(baseUrl + "/logout/" + whoAmI).get(ClientResponse.class);
 	}
 
 	private void createMyTable () {

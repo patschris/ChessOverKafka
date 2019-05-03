@@ -8,6 +8,8 @@ import structures.PersonalStats;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,6 +34,12 @@ public class Stats extends JFrame {
         addTitle();
         addTabs();
         addButton();
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent windowEvent){
+                logout();
+                System.exit(0);
+            }
+        });
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
         setResizable(false);
@@ -91,6 +99,9 @@ public class Stats extends JFrame {
         }
     }
 
+    private void logout () {
+        Client.create().resource(baseUrl + "/logout/" + whoAmI).get(ClientResponse.class);
+    }
 
     private String getGlobalStats () {
         ClientResponse response = Client.create().resource(baseUrl + "/gamestats").get(ClientResponse.class);
