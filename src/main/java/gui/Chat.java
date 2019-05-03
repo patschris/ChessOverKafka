@@ -58,9 +58,6 @@ public class Chat extends JFrame{
 			public void run() {
 
 				Consumer<Long, String> myconsumer = ConsumerCreator.createConsumer(myself + "Chat");
-
-
-
 				String msg = "";
 				while (true) {
 					@SuppressWarnings("deprecation")
