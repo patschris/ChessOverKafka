@@ -5,14 +5,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
@@ -37,7 +30,6 @@ import security.SecurePassword;
 
 public class Login extends JFrame {
 
-	private static final long serialVersionUID = 5293085684843654813L;
 	private JTextField userField;
 	private JTextField passwordField;
 	private JLabel register;
@@ -45,26 +37,30 @@ public class Login extends JFrame {
 
 	public Login() {
 		super("Login");
-		setSize(700,300);	// size of login window
-		setLayout(null);	// no default layout is used
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	// close operation
+		setSize(700,300);
+		setLayout(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
+		constructGraphicDetails();
+		setResizable(false);
+		setVisible(true);
 		getBaseUrl();
+	}
+
+	private void constructGraphicDetails() {
 		addTitle();
 		addUsername();
 		addPassword();
 		addButtons();
 		addRegistrationLink();
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
-		setResizable(false);
-		setVisible(true);
 	}
-	
+
 	/**
 	 * 	Creating a label to inform the user.
 	 */
 	private void addTitle(){
-		JLabel title=new JLabel("Chess Over Kafka");
+		JLabel title = new JLabel("Chess Over Kafka");
 		title.setSize(400, 50);
 		title.setLocation(300, 15);
 		add(title);
@@ -74,48 +70,56 @@ public class Login extends JFrame {
 	 * 	Label used for Username field.
 	 */
 	private void addUsername(){
-        JLabel username = new JLabel("Username");	// 	adds a Username label
-		username.setSize(800,80);			//	setting its size and
-		username.setLocation(80,55);		//	location
-		userField = new JTextField();		//	adds text field for username
-		userField.addKeyListener(new KeyboardListener());	// sets a keylistener for enter
-		userField.setColumns(100);			//	adds a username text field
-		userField.setSize(400, 30);		//	sets its size and location
-		userField.setLocation(200, 80);	//
-		add(username);	//	adds username label and field
-		add(userField);	//	to this window
+        JLabel username = new JLabel("Username");
+		username.setSize(800,80);
+		username.setLocation(80,55);
+		userField = new JTextField();
+		userField.addKeyListener(new KeyAdapterListener());
+		userField.setColumns(100);
+		userField.setSize(400, 30);
+		userField.setLocation(200, 80);
+		add(username);
+		add(userField);
 	}
 
 	/**
 	 * Label user for password field.
 	 */
 	private void addPassword(){
-        JLabel password = new JLabel("Password");	//	adds a password label
-		password.setSize(800,80);			//	sets its size and location
+        JLabel password = new JLabel("Password");
+		password.setSize(800,80);
 		password.setLocation(80,105);
-        passwordField = new JPasswordField();	//	adds a password field
-        passwordField.addKeyListener(new KeyboardListener());	// adds key listener for enter
-        passwordField.setColumns(100);			//	adds password field
-        passwordField.setSize(400, 30);		//	sets its size and location
+        passwordField = new JPasswordField();
+        passwordField.addKeyListener(new KeyAdapterListener());
+        passwordField.setColumns(100);
+        passwordField.setSize(400, 30);
         passwordField.setLocation(200, 130);
-		add(password);	//	adds password label and
-		add(passwordField);	//	password field to this window
+		add(password);
+		add(passwordField);
 	}
 
+
+	private void addCancelButton () {
+		JButton cancelButton = new JButton("Clear");
+		cancelButton.setSize(100, 30);
+		cancelButton.setLocation(250, 180);
+		cancelButton.addActionListener(event -> clear());
+		add(cancelButton);
+	}
+
+	private void addSubmitButton () {
+		JButton submitButton = new JButton("Login");
+		submitButton.setSize(100, 30);
+		submitButton.setLocation(400, 180);
+		submitButton.addActionListener(event -> enterPressed());
+		add(submitButton);
+	}
 	/**
 	 * Buttons of the <code>Login</code> window. 
 	 */
 	private void addButtons(){
-        JButton cancelButton = new JButton("Clear");		//	creates Clear button,
-		cancelButton.setSize(100, 30);		//	sets its size and location
-		cancelButton.setLocation(250, 180);
-		cancelButton.addActionListener(event -> clear());	// sets listener for Cancel button
-        JButton submitButton = new JButton("Login");		// 	creates Login button
-		submitButton.setSize(100, 30);		
-		submitButton.setLocation(400, 180);
-		submitButton.addActionListener(event -> enterPressed());	// sets listener for Submit button
-		add(cancelButton);	//
-		add(submitButton);	// adds Cancel and Sumbit buttons to this window
+		addCancelButton ();
+		addSubmitButton ();
 	}
 	
 	private void addRegistrationLink() {
@@ -143,22 +147,30 @@ public class Login extends JFrame {
 	 */
 	private void enterPressed () {
 		String username = userField.getText();
-        ObjectNode objectNode = new ObjectMapper().createObjectNode();
-		objectNode.put("name", username);
-		objectNode.put("password", SecurePassword.sha256(passwordField.getText()));
-		clear();
-		WebResource webResource = Client.create().resource(baseUrl+ "/login");
-		ClientResponse response = webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
-		if (response.getStatus() == 200) {
-			dispose();
-			new Table(username);
-		}
-		else if (response.getStatus() == 400) {
-			JOptionPane.showMessageDialog(this, "Incorrect username or password!\nPlease try again");
+		String password = passwordField.getText();
+		if (username.isEmpty() || password.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Empty username or password field\nPlease try again");
 		}
 		else {
-			JOptionPane.showMessageDialog(this, "This user is already logged in\nPlease try again");
-
+			ObjectNode node = new ObjectMapper().createObjectNode();
+			node.put("name", username);
+			node.put("password", SecurePassword.sha256(password));
+			clear();
+			WebResource webResource = Client.create().resource(baseUrl + "/login");
+			switch (webResource.accept("application/json").type("application/json").post(ClientResponse.class, node.toString()).getStatus()) {
+				case 200:
+					dispose();
+					new Table(username);
+					break;
+				case 400:
+					JOptionPane.showMessageDialog(this, "Incorrect username or password\nPlease try again");
+					break;
+				case 401:
+					JOptionPane.showMessageDialog(this, "This user is already logged in\nPlease try again");
+					break;
+				default:
+					JOptionPane.showMessageDialog(this, "An error occurred\nPlease try again");
+			}
 		}
     }
 	
@@ -167,34 +179,26 @@ public class Login extends JFrame {
 	 */
 	private void clear () {
 		userField.setText("");
-        passwordField.setText("");
+		passwordField.setText("");
 	}
-	
+
 	/** 
 	 * Keyboard listener for <code>Login</code> window.
 	 */
-	private class KeyboardListener implements KeyListener {
-	
+	private class KeyAdapterListener extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent keyEvent) {
 			if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
 				enterPressed();
 			}
 		}
-
-		@Override
-		public void keyReleased(KeyEvent keyEvent) {}
-
-		@Override
-		public void keyTyped(KeyEvent keyEvent) {}
 	}
 
 	private class RegisterListener implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent mouseEvent) {
-			dispose();
-			new Register();			
+			openRegisterWindow();
 		}
 
 		@Override
@@ -214,6 +218,10 @@ public class Login extends JFrame {
 
 		@Override
 		public void mouseReleased(MouseEvent mouseEvent) {
+			openRegisterWindow();
+		}
+
+		private void openRegisterWindow () {
 			dispose();
 			new Register();
 		}
