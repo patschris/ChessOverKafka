@@ -25,7 +25,12 @@ import chess.pieces.Rook;
  */
 
 public class Game {
-
+	
+	public int checkmatewhite = 0;
+	public int checkmateblack = 0;
+	public int stalemate = 0;
+	
+	
     /** A game of 2-player chess, displayed in a GUI. 
      * @throws InterruptedException */
     public Game(PieceColor pieceColor, String myself, String opponent) throws InterruptedException {
@@ -271,4 +276,16 @@ public class Game {
 
     /** The y-location of the piece selected by the user for a move. */
     private int _selectedY;
+    
+    public int checkGameOver() {
+
+		if(checkmatewhite==1 || checkmateblack ==1 || stalemate ==1) {
+    		return 1;
+    	}
+    	else {
+    		return 0;
+    	}
+    	
+}
+    
 }
