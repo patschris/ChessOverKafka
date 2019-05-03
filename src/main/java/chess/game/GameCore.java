@@ -24,8 +24,10 @@ public class GameCore {
 
 	static Producer<Long, String> black_producer;
 	static Consumer<Long, String> black_consumer;
+	static Consumer<Long, String> black_consumer_chat;;
 	static Producer<Long, String> white_producer;
 	static Consumer<Long, String> white_consumer;
+	static Consumer<Long, String> white_consumer_chat;
 	static String WwritesBreads;
 	static String BwritesWreads;
 	static PieceColor pieceColor;
@@ -61,7 +63,7 @@ public class GameCore {
 				while (true) {
 					ConsumerRecords<Long, String> consumerRecords = black_consumer.poll(1);
 					if (consumerRecords.count() == 0) {
-						System.out.println("NO message... trying to read from..." + WwritesBreads);
+						//System.out.println("NO message... trying to read from..." + WwritesBreads);
 						TimeUnit.SECONDS.sleep(1);
 						continue;
 					}
@@ -156,6 +158,7 @@ public class GameCore {
 			boolean termination = false;
 			int mymoves = 0;
 			int opponentmoves = 0;
+			
 			GameCore.white_consumer = ConsumerCreator.createConsumer(BwritesWreads);
 			GameCore.white_producer = ProducerCreator.createProducer();
 
@@ -200,7 +203,7 @@ public class GameCore {
 					ConsumerRecords<Long, String> consumerRecords2 = white_consumer.poll(1);
 					if (consumerRecords2.count() == 0) { 
 						TimeUnit.SECONDS.sleep(1);
-						System.out.println("NO message... trying to read from..." + BwritesWreads);
+						//System.out.println("NO message... trying to read from..." + BwritesWreads);
 						continue;
 					}
 					System.out.println("White is reading from : " + BwritesWreads);
@@ -296,6 +299,7 @@ public class GameCore {
 			black_consumer.close();
 			logout(WwritesBreads);
 		}
+		
 	}
 
 	public static void consumeMessages(Consumer<Long, String> consumer) {

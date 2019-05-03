@@ -1,6 +1,7 @@
 package gui;
 
-import chess.chessgui.ChessGUI;
+import kafka_consumer_producer.ConsumerCreator;
+import kafka_consumer_producer.ProducerCreator;
 import structures.ChatMemory;
 import structures.Message;
 
@@ -9,60 +10,101 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.TimeUnit;
 
 import static chess.chessgui.GameDisplay.BOARD;
 
-public class Chat extends JFrame {
+public class Chat extends JFrame{
 
 	private static final long serialVersionUID = -3689107953291083901L;
 	private JTextPane textArea;
 	private JTextField messageField;
 	private JButton sendButton;
-	private ChessGUI chessGUI;
-	private ChatMemory chatMemory = ChatMemory.getInstance();
+	public ChatMemory chatMemory = ChatMemory.getInstance();
+	public String myself;
+	public String opponent;
 
-	public Chat(ChessGUI cc) throws  BadLocationException {
+	public Chat(String myself, String opponent) throws  BadLocationException {
 		super("Chat");
-		chessGUI = cc;
+		
+		this.myself = myself;
+		this.opponent = opponent;
+		
 		setSize(700,300);	// size of login window
 		setLayout(null);	// no default layout is used
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent){
-				chessGUI.setChat(null);
-				dispose();
+				
 			}
 		});
 		setLocation(5, BOARD + 70);
 		setResizable(false);
+
 		textAreaLabel();
 		addInputField();
 		addButton();
 		setVisible(true);
+		// Runs outside of the Swing UI thread
+		new Thread(new Runnable() {
+			public void run() {
 
-		if (!ChatMemory.chatexists) {
-			new SwingWorker<Void, Void>() {
+				Consumer<Long, String> myconsumer = ConsumerCreator.createConsumer(myself + "Chat");
 
-				@Override
-				protected Void doInBackground() throws Exception {
 
-					while(true) {}
+
+				String msg = "";
+				while (true) {
+					@SuppressWarnings("deprecation")
+					ConsumerRecords<Long, String> consumerRecords = myconsumer.poll(10);
+					if (consumerRecords.count() == 0) {
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						//System.out.println("NO message... trying to read from..." + myself  + "Chat");
+						continue;
+					}
+					for(ConsumerRecord<Long, String> record: consumerRecords) {
+
+						msg = (String) record.value();
+						Message m = new Message(opponent, msg);
+
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								try {
+									addMessage(m, myself);
+								} catch (BadLocationException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								chatMemory.add(m);
+
+							}
+						});
+
+
+					}
+					// commits the offset of record to broker.
+					myconsumer.commitAsync();	
 				}
 
-				@Override
-				protected void done() {
-
-				}
-			}.execute();
-
-			System.out.println("Swing worker spawned asynchronously!");
-
-		}
-
-
+			}
+		}).start();
 
 	}
+
+
 
 	private void textAreaLabel() throws BadLocationException {
 
@@ -73,7 +115,7 @@ public class Chat extends JFrame {
 		textArea = new JTextPane();
 
 		/***********************************************************************/
-		chatMemory.retrieveHistory(chessGUI.myself, textArea);
+		chatMemory.retrieveHistory(myself, textArea);
 		/***********************************************************************/
 
 		textArea.setEditable(false);
@@ -82,6 +124,7 @@ public class Chat extends JFrame {
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		areaLabel.add(scrollPane);
 		add(areaLabel);
+
 	}
 
 	private void addInputField() {
@@ -93,7 +136,7 @@ public class Chat extends JFrame {
 		add(messageField);
 	}
 
-	private void  addButton() {
+	private void addButton() {
 		sendButton = new JButton("Send");
 		sendButton.setSize(70, 30);
 		sendButton.setLocation(610, 230);
@@ -102,7 +145,7 @@ public class Chat extends JFrame {
 		add(sendButton);
 	}
 
-	private void addMessage (Message message, String me) throws BadLocationException {
+	public void addMessage (Message message, String me) throws BadLocationException {
 		StyledDocument doc = textArea.getStyledDocument();
 		SimpleAttributeSet keyWord = new SimpleAttributeSet();
 		if (message.getUser().equals(me)) StyleConstants.setForeground(keyWord, Color.BLACK);
@@ -113,12 +156,27 @@ public class Chat extends JFrame {
 	private void enterPressed() throws BadLocationException {
 		String myMessage = messageField.getText();
 		if (!myMessage.equals("")) {
-			Message m = new Message(chessGUI.myself, myMessage);
-			addMessage(m, chessGUI.myself);
+			//print message on my chat box
+			Message m = new Message(myself, myMessage);
+			addMessage(m, myself);
 			chatMemory.add(m);
 			messageField.setText("");
 
-			/* Edw to stelneis. Kapou prepei na perimeneis gia data */
+			//open producer and send to my opponents chat topic
+			Producer<Long, String> chat_producer = ProducerCreator.createProducer();
+			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(opponent + "Chat" , myMessage);
+			chat_producer.send(record);
+			chat_producer.close();
+
+			System.out.println("Produced message to topic : " + opponent + "Chat");
+
+			//wait 1 second, in order not to overload chat
+			try {
+				TimeUnit.SECONDS.sleep(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		}
 	}

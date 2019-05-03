@@ -5,7 +5,7 @@ import chess.pieces.Piece;
 import chess.pieces.PieceColor;
 import gui.Chat;
 import javax.swing.JOptionPane;
-import javax.swing.text.BadLocationException;
+import javax.swing.SwingWorker;
 import java.awt.event.MouseEvent;
 import static chess.chessgui.GameDisplay.CELL;
 import static chess.chessgui.GameDisplay.MARGIN;
@@ -37,13 +37,24 @@ public class ChessGUI extends TopLevel {
 				+ "WHITE's turn.", "turn",
 				new LayoutSpec("y", 1, "x", 0));
 
-		addMenuButton("Options->Chat", "chat");
-		addMenuButton("Options->Stats", "stats");
-		addMenuButton("Options->Quit", "quit");
 
+		addMenuButton("Options->Stats", "stats");
+
+		
 		_display = new GameDisplay(game);
 		add(_display, new LayoutSpec("y", 2, "width", 2));
 		
+		
+		new SwingWorker<Void, Void>() {
+
+			@Override
+			protected Void doInBackground() throws Exception {
+				new Chat(myself,opponent);
+				return null;
+			}
+			
+			
+		}.execute();
 		
 		display(true);
 
@@ -68,24 +79,6 @@ public class ChessGUI extends TopLevel {
 
 	public void waitForYourTurn(MouseEvent event) {
 		JOptionPane.showMessageDialog(null, "Wait for your opponent to make his move!");
-	}
-
-	/** Respond to the "Quit" button. */
-	public void quit(String dummy) {
-		closeChat();
-		_game.quit();
-	}
-
-	public void chat(String dummy) throws BadLocationException {
-		if (chat == null) chat = new Chat(this);
-	}
-
-	public void closeChat () {
-		if (chat != null) chat.dispose();
-	}
-
-	public void setChat (Chat c) {
-		chat = c;
 	}
 
 	public void stats(String dummy) {
@@ -209,7 +202,5 @@ public class ChessGUI extends TopLevel {
 
 	/** The game being consulted. */
 	public final Game _game;
-
-	private Chat chat = null;
 
 }

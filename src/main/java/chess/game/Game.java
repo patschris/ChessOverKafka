@@ -45,12 +45,6 @@ public class Game {
         _selectedY = -1;
     }
 
-    /** Quits the game. */
-    public void quit() {
-        _gui.closeChat();
-        System.exit(0);
-    }
-
     /** Undoes the last move in the game. */
     public void undoMove() {
         if (_moves.size() > 0) {
