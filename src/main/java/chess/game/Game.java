@@ -26,12 +26,11 @@ import chess.pieces.Rook;
 
 public class Game {
 
-
     /** A game of 2-player chess, displayed in a GUI. 
      * @throws InterruptedException */
-    public Game(PieceColor pieceColor) throws InterruptedException {
+    public Game(PieceColor pieceColor, String myself, String opponent) throws InterruptedException {
         _moves = new ArrayList<Move>();
-        _gui = new ChessGUI("Chess", this, pieceColor);
+        _gui = new ChessGUI("Chess", this, pieceColor, myself, opponent);
         newGame(pieceColor);
     }
 
