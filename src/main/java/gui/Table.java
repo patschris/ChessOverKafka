@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -218,35 +219,47 @@ public class Table extends JFrame {
 
 
 	private void selectOpponent() {
-		String opponent = list.getSelectedValue();
+		String opponent = (String) list.getSelectedValue();
 		if (opponent == null) {
-			JOptionPane.showMessageDialog(this, "No opponent selected");
+			JOptionPane.showMessageDialog(null, "No opponent selected");
 		}
 		else {
 			addTopics();
 			//send your name to your opponent
 			Producer<Long, String> black_producer = ProducerCreator.createProducer();
-			ProducerRecord<Long, String> record = new ProducerRecord<>(opponent , whoAmI);
+			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(opponent , whoAmI);
 			black_producer.send(record);
 			black_producer.close();
+
 			System.out.println("Iam: " + whoAmI);
 			System.out.println("Opponent: " + opponent);
 
 			//begin the game
 			System.out.println("Ready to play!");
-			dispose();
+			setVisible(false);
+
 			new SwingWorker<Void, Void>() {
+
 				@Override
 				protected Void doInBackground() throws Exception {
-					Game g = new Game(PieceColor.BLACK, whoAmI, opponent);
+					Game g = new Game(PieceColor.BLACK,whoAmI, opponent);
 					GameCore gamec = new GameCore(PieceColor.BLACK, g, opponent, whoAmI);
 					gamec.startgame(opponent , whoAmI);
+					g._gui.frame.setVisible(false);
+					g._gui.frame.dispose();
+					dispose();
+					new Table(whoAmI);
 					return null;
 				}
+
 				@Override
 				protected void done() {
+
 				}
 			}.execute();
+
+
+
 		}
 	}
 
@@ -279,20 +292,31 @@ public class Table extends JFrame {
 			statsButton.setVisible(false);
 			new SwingWorker<Void, Void>() {
 				protected Void doInBackground() throws InterruptedException {
-					createMyTable();
+
 					addTopics();
-					//create the white_consumer and wait for someone to join you
+
+
 					Consumer<Long, String> white_consumer = ConsumerCreator.createConsumer(whoAmI);
+					//consume any left messages
+					GameCore.consumeMessages(white_consumer);
+
+
+					//create the white_consumer and wait for someone to join you
+
+
 					String msg = "";
+
+					createMyTable();
 					System.out.println("Waiting For Message!");
 					while (true) {
 						@SuppressWarnings("deprecation")
 						ConsumerRecords<Long, String> consumerRecords = white_consumer.poll(10);
 						if (consumerRecords.count() == 0) {
+							TimeUnit.SECONDS.sleep(1);
 							continue;
 						}
 						for(ConsumerRecord<Long, String> record: consumerRecords) {
-							msg = record.value();
+							msg = (String) record.value();
 							System.out.println(msg);
 							//JOptionPane.showMessageDialog(null, record.value());	
 						}
@@ -301,6 +325,11 @@ public class Table extends JFrame {
 						break;
 					}
 					white_consumer.close();
+
+					setVisible(false);
+
+					TimeUnit.SECONDS.sleep(1);
+
 					opponent = msg;
 					System.out.println("Iam: " + whoAmI);
 					System.out.println("Opponent: " + opponent);
@@ -311,6 +340,14 @@ public class Table extends JFrame {
 					Game g = new Game(PieceColor.WHITE, whoAmI, opponent);
 					GameCore gamec = new GameCore(PieceColor.WHITE, g, whoAmI, opponent);
 					gamec.startgame(whoAmI, opponent);
+
+					g._gui.frame.setVisible(false);
+					g._gui.frame.dispose();
+
+					dispose();
+
+					new Table(whoAmI);
+
 					return null;
 				}
 
