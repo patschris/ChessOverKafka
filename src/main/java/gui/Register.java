@@ -27,7 +27,7 @@ import security.SecurePassword;
 
 class Register extends JFrame {
 
-	private String baseUrl;
+	private static final long serialVersionUID = -7447484008923022852L;
 	private JTextField userField;
 	private JTextField passwordField;
 	private JTextField repeatPasswordField;
@@ -205,7 +205,7 @@ class Register extends JFrame {
 		try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
 			Properties properties = new Properties();
 			properties.load(fileInput);
-			baseUrl = properties.getProperty("restAddress");
+			properties.getProperty("restAddress");
 		}
 		catch (IOException e) {
 			e.printStackTrace();

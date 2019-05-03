@@ -18,7 +18,8 @@ import java.util.Properties;
 
 public class Stats extends JFrame {
 
-    private String whoAmI;
+	private static final long serialVersionUID = -5638963444433230800L;
+	private String whoAmI;
     private String baseUrl;
     private DecimalFormat df = new DecimalFormat("#.#");
 

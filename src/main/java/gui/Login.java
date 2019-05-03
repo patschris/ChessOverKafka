@@ -6,13 +6,9 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.*;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.File;
 import java.util.Properties;
-
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,6 +27,7 @@ import security.SecurePassword;
 
 public class Login extends JFrame {
 
+	private static final long serialVersionUID = -4637751738234470485L;
 	private JTextField userField;
 	private JTextField passwordField;
 	private JLabel register;

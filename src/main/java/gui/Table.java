@@ -6,8 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -296,7 +294,7 @@ public class Table extends JFrame {
 				protected Void doInBackground() throws InterruptedException {
 
 					addTopics();
-					System.out.println("here");
+					
 					Consumer<Long, String> white_consumer = ConsumerCreator.createConsumer(whoAmI);
 					//consume any left messages
 					GameCore.consumeMessages(white_consumer);

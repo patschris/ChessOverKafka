@@ -12,10 +12,12 @@ import java.util.Queue;
 public class ChatMemory {
     private static Queue<Message> messages = new LinkedList <Message>();
     private static ChatMemory instance = null;
+    public static boolean chatexists = false;
 
     public static ChatMemory getInstance() {
         if (instance == null)
             instance = new ChatMemory();
+        	chatexists = true;
         return instance;
     }
 
