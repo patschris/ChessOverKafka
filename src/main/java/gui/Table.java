@@ -156,7 +156,7 @@ public class Table extends JFrame {
 		refreshButton.setSize(50,50);
 		refreshButton.setLocation(560, 120);
 		refreshButton.addActionListener(event -> getOpponents());
-		statsButton = new JButton("Stats");
+		statsButton = new JButton("See stats");
 		statsButton.setSize(100, 30);
 		statsButton.setLocation(300, 180);
 		statsButton.addActionListener(event -> {dispose(); new Stats(whoAmI);});

@@ -153,8 +153,12 @@ public class Login extends JFrame {
 			dispose();
 			new Table(username);
 		}
-		else {
+		else if (response.getStatus() == 200) {
 			JOptionPane.showMessageDialog(this, "Incorrect username or password!\nPlease try again");
+		}
+		else {
+			JOptionPane.showMessageDialog(this, "This user is already logged in\nPlease try again");
+
 		}
     }
 	
