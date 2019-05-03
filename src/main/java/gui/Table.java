@@ -296,16 +296,12 @@ public class Table extends JFrame {
 				protected Void doInBackground() throws InterruptedException {
 
 					addTopics();
-
-
+					System.out.println("here");
 					Consumer<Long, String> white_consumer = ConsumerCreator.createConsumer(whoAmI);
 					//consume any left messages
 					GameCore.consumeMessages(white_consumer);
 
-
 					//create the white_consumer and wait for someone to join you
-
-
 					String msg = "";
 
 					createMyTable();
