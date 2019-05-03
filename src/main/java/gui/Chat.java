@@ -51,9 +51,9 @@ public class Chat extends JFrame {
         textArea = new JTextPane();
 
         /***********************************************************************/
-        chatMemory.add(new Message("Egw","Diko mou minima"));
-        chatMemory.add(new Message("Antipalos","Allounou minima"));
-        chatMemory.retrieveHistory("Egw", textArea);
+        chatMemory.add(new Message(chessGUI.myself,"Diko mou minima"));
+        chatMemory.add(new Message(chessGUI.opponent,"Allounou minima"));
+        chatMemory.retrieveHistory(chessGUI.myself, textArea);
         /***********************************************************************/
 
         textArea.setEditable(false);
@@ -93,8 +93,8 @@ public class Chat extends JFrame {
     private void enterPressed() throws BadLocationException {
         String myMessage = messageField.getText();
         if (!myMessage.equals("")) {
-            Message m = new Message("Egw", myMessage);
-            addMessage(m, "Egw");
+            Message m = new Message(chessGUI.myself, myMessage);
+            addMessage(m, chessGUI.myself);
             chatMemory.add(m);
             messageField.setText("");
 
