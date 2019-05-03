@@ -51,7 +51,7 @@ import kafka_consumer_producer.ProducerCreator;
 public class Table extends JFrame {
 
 	private static final long serialVersionUID = 886705961481791855L;
-	private String baseUrl;
+	public String baseUrl;
 	private String whoAmI;
 	private String opponent;
 	private JLabel title;
