@@ -7,10 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultListModel;
@@ -40,7 +37,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 import chess.game.Game;
 import chess.game.GameCore;
@@ -274,6 +270,7 @@ public class Table extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
+			@SuppressWarnings("unchecked")
 			JComboBox<String> combo = (JComboBox<String>) actionEvent.getSource();
 			String selectedOption = (String) combo.getSelectedItem();
 			if (selectedOption.equals("Create table")) {
