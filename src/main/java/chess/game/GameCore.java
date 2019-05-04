@@ -80,8 +80,13 @@ public class GameCore {
 							JOptionPane.showMessageDialog(null, "Your opponent left the game! Exiting...");
 							black_consumer.commitAsync();
 							winnermoves = blackmoves;
-							winner = BwritesWreads;
+							winner = black;
 							winnerColor = "black";
+							
+							black_producer.close();
+							consumeMessages(black_consumer);
+							black_consumer.close();
+							logout(black);
 							
 							sendStats();
 							
@@ -164,6 +169,7 @@ public class GameCore {
 				else {
 					JOptionPane.showMessageDialog(null, "Game Over, the game ends in draw!!");
 				}
+				terminateGame();
 			}
 
 
@@ -228,10 +234,14 @@ public class GameCore {
 							white_consumer.commitAsync();
 
 							winnermoves = whitemoves;
-							winner = WwritesBreads;
+							winner = white;
 							winnerColor = "white";
+							
+							white_producer.close();
+							consumeMessages(white_consumer);
+							white_consumer.close();
+							logout(white);
 
-							terminateGame();
 							termination = true;
 							break;
 						}
@@ -283,8 +293,9 @@ public class GameCore {
 				else {
 					JOptionPane.showMessageDialog(null, "Game Over, the game ends in draw!!");
 				}
+				terminateGame();
 			}
-			terminateGame();
+			
 		}
 
 
@@ -293,16 +304,12 @@ public class GameCore {
 	public static void terminateGame() {
 		System.out.println("Terminating the Game");
 		if(pieceColor.equals(PieceColor.WHITE)) {
-			white_producer.close();
 			consumeMessages(white_consumer);
-			white_consumer.close();
 			logout(white);
 			sendStats();
 		}
 		else{
-			black_producer.close();
 			consumeMessages(black_consumer);
-			black_consumer.close();
 			logout(black);
 		}
 	}
