@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Properties;
 
-public class Stats extends JFrame {
+class Stats extends JFrame {
 
 	private static final long serialVersionUID = -5638963444433230800L;
 	private String whoAmI;
@@ -24,8 +24,7 @@ public class Stats extends JFrame {
     private DecimalFormat df = new DecimalFormat("#.#");
 
 
-
-    public Stats(String user) {
+    Stats(String user) {
         super("Stats");
         whoAmI = user;
         setSize(700,300);
@@ -72,7 +71,7 @@ public class Stats extends JFrame {
         tabbedPane.add("My stats", secondPanel);
         tabbedPane.add("Top 5", thirdPanel);
         tabbedPane.setLocation(50, 35);
-        tabbedPane.setSize(600,180);
+        tabbedPane.setSize(600,190);
         add(tabbedPane);
     }
 
@@ -107,10 +106,11 @@ public class Stats extends JFrame {
     private String getGlobalStats () {
         ClientResponse response = Client.create().resource(baseUrl + "/gamestats").get(ClientResponse.class);
         GlobalStats globalStats = new Gson().fromJson(response.getEntity(String.class), GlobalStats.class);
-        StringBuilder stats =  new StringBuilder("<html><body><h2>Global stats</h2>");
+        StringBuilder stats =  new StringBuilder("<html><body><h3>Global stats</h3>");
         stats.append("Total games played : " + globalStats.getGamesPlayed() + "<p/>");
         stats.append("Whites won : " + globalStats.getWhiteWon() + "<p/>");
         stats.append("Black won : " + globalStats.getBlackWon() + "<p/>");
+        stats.append("Draws : " + globalStats.getDraws() + "<p/>");
         stats.append("Average amount of moves to win : " + df.format(globalStats.getAvgMoves()) + "<p/></body></html>");
         return stats.toString();
     }
@@ -118,20 +118,21 @@ public class Stats extends JFrame {
     private String getMyStats () {
         ClientResponse response = Client.create().resource(baseUrl + "/personalstats/" + whoAmI).get(ClientResponse.class);
         PersonalStats personalStats = new Gson().fromJson(response.getEntity(String.class), PersonalStats.class);
-        StringBuilder stats =  new StringBuilder("<html><body><h2>Your stats</h2>");
-        stats.append("Games played : " + personalStats.getGamesPlayed() + "<p/>");
-        stats.append("Wins : " + personalStats.getGamesWon() + "<p/>");
-        stats.append("Defeats : " + personalStats.getGamesLost() + "<p/>");
-        stats.append("Games played as white : " + personalStats.getWhite() + "<p/>");
-        stats.append("Games played as black : " + personalStats.getBlack() + "<p/>");
-        stats.append("Average amount of moves : " + df.format(personalStats.getAvgMoves()) + "<p/></body></html>");
+        StringBuilder stats =  new StringBuilder("<html><body><h3>Your stats</h3>");
+        stats.append("Games played : " + personalStats.getGamesPlayed()).append("<p/>");
+        stats.append("Wins : " + personalStats.getGamesWon()).append("<p/>");
+        stats.append("Defeats : " + personalStats.getGamesLost()).append("<p/>");
+        stats.append("Draws : ").append(personalStats.getDraws()).append("<p/>");
+        stats.append("Games played as white : " + personalStats.getWhite()).append("<p/>");
+        stats.append("Games played as black : " + personalStats.getBlack()).append("<p/>");
+        stats.append("Average amount of moves : ").append(df.format(personalStats.getAvgMoves())).append("<p/></body></html>");
         return stats.toString();
     }
 
     private String getTop5 () {
         ClientResponse response = Client.create().resource(baseUrl + "/top5").get(ClientResponse.class);
         JsonArray arr = new JsonParser().parse(response.getEntity(String.class)).getAsJsonArray();
-        StringBuilder stats = new StringBuilder("<html><body><h2>Top 5 players by wins</h2>");
+        StringBuilder stats = new StringBuilder("<html><body><h3>Top 5 players by wins</h3>");
         for (JsonElement player : arr) {
             JsonObject jsonObject = player.getAsJsonObject();
             stats.append(jsonObject.get("winner").getAsString()).append(" : ").append(jsonObject.get("wins").getAsString()).append("<p/>");
