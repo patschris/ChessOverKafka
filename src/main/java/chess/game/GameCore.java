@@ -314,7 +314,7 @@ public class GameCore {
 	public static void terminateGamefromX() {
 		System.out.println("Terminating the Game from X!!");
 		if(pieceColor.equals(PieceColor.WHITE)) {
-			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(black , "Leaving the game");
+			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(white , "Leaving the game");
 			white_producer.send(record);
 			white_producer.close();
 			consumeMessages(white_consumer);
@@ -322,7 +322,7 @@ public class GameCore {
 			logout(white);
 		}
 		else{
-			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(white , "Leaving the game");
+			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(black , "Leaving the game");
 			black_producer.send(record);
 			black_producer.close();
 			consumeMessages(black_consumer);
