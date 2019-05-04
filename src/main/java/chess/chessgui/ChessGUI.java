@@ -127,9 +127,16 @@ public class ChessGUI extends TopLevel {
 				if (_game.inCheck(_game.turn())) {
 					label = "CHECKMATE, " + _game.turn().opposite().string()
 							+ " wins.";
+					if(_game.turn().opposite().string().equals(PieceColor.WHITE)) {
+						_game.checkmateblack = 1;
+					}
+					else {
+						_game.checkmatewhite = 1;
+					}
 				}
 				else {
 					label = "STALEMATE, game ends in draw.";
+					_game.stalemate = 1;
 				}
 			} else {
 				
