@@ -217,7 +217,7 @@ public class GameCore {
 							white_consumer.commitAsync();
 
 							winnermoves = whitemoves;
-							winner = BwritesWreads;
+							winner = WwritesBreads;
 							winnerColor = "white";
 
 							terminateGame();
@@ -259,13 +259,13 @@ public class GameCore {
 				if(game.checkmatewhite == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
 					winnermoves = blackmoves;
-					winner = WwritesBreads;
+					winner = BwritesWreads;
 					winnerColor = "black";
 				}
 				else if(game.checkmateblack == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, white player wins!!");
 					winnermoves = whitemoves;
-					winner = BwritesWreads;
+					winner = WwritesBreads;
 					winnerColor = "white";
 
 				}
@@ -294,7 +294,6 @@ public class GameCore {
 			black_consumer.close();
 			logout(WwritesBreads);
 		}
-		System.exit(0);
 	}
 
 
