@@ -149,16 +149,21 @@ public class GameCore {
 
 			if(!termination) {
 				if(game.checkmatewhite == 1) {
-					JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
+					JOptionPane.showMessageDialog(null, "Game Over, white player wins!!");
+					winnermoves = whitemoves;
+					winner = BwritesWreads;
+					winnerColor = "white";
 				}
 				else if(game.checkmateblack == 1) {
-					JOptionPane.showMessageDialog(null, "Game Over, white player wins!!");
+					JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
+					winnermoves = blackmoves;
+					winner = WwritesBreads;
+					winnerColor = "black";
+
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Game Over, the game ends in draw!!");
 				}
-
-				terminateGame();
 			}
 
 
@@ -263,16 +268,16 @@ public class GameCore {
 
 			if(!termination) {
 				if(game.checkmatewhite == 1) {
-					JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
-					winnermoves = blackmoves;
-					winner = BwritesWreads;
-					winnerColor = "black";
-				}
-				else if(game.checkmateblack == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, white player wins!!");
 					winnermoves = whitemoves;
-					winner = WwritesBreads;
+					winner = BwritesWreads;
 					winnerColor = "white";
+				}
+				else if(game.checkmateblack == 1) {
+					JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
+					winnermoves = blackmoves;
+					winner = WwritesBreads;
+					winnerColor = "black";
 
 				}
 				else {
@@ -350,7 +355,6 @@ public class GameCore {
 		ObjectNode node = new ObjectMapper().createObjectNode();
 		node.put("white", BwritesWreads);
 		node.put("black", WwritesBreads);
-		node.put("moves", winnermoves);
 		node.put("moves", winnermoves);
 		node.put("winner", winner);
 		node.put("winnerColor", winnerColor);
