@@ -29,9 +29,9 @@ public class Chat extends JFrame{
 	private JTextPane textArea;
 	private JTextField messageField;
 	private JButton sendButton;
-	public ChatMemory chatMemory = ChatMemory.getInstance();
-	public String myself;
-	public String opponent;
+	private ChatMemory chatMemory = ChatMemory.getInstance();
+	private String myself;
+	private String opponent;
 
 	public Chat(String myself, String opponent) throws  BadLocationException {
 		super("Chat");
@@ -53,6 +53,7 @@ public class Chat extends JFrame{
 		addInputField();
 		addButton();
 		setVisible(true);
+		
 		// Runs outside of the Swing UI thread
 		new Thread(new Runnable() {
 			public void run() {

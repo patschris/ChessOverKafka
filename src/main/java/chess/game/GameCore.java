@@ -1,8 +1,5 @@
 package chess.game;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -10,6 +7,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -18,19 +18,23 @@ import chess.pieces.PieceColor;
 import kafka_consumer_producer.ConsumerCreator;
 import kafka_consumer_producer.Destination;
 import kafka_consumer_producer.ProducerCreator;
+import security.RestServiceURL;
 
 
 public class GameCore {
 
-	static Producer<Long, String> black_producer;
-	static Consumer<Long, String> black_consumer;
-	static Consumer<Long, String> black_consumer_chat;;
-	static Producer<Long, String> white_producer;
-	static Consumer<Long, String> white_consumer;
-	static Consumer<Long, String> white_consumer_chat;
-	static String WwritesBreads;
-	static String BwritesWreads;
-	static PieceColor pieceColor;
+	private static Producer<Long, String> black_producer;
+	private static Consumer<Long, String> black_consumer;
+	private static Producer<Long, String> white_producer;
+	private static Consumer<Long, String> white_consumer;
+	private static String WwritesBreads;
+	private static String BwritesWreads;
+	private static PieceColor pieceColor;
+	private static int  whitemoves = 0;
+	private static int blackmoves = 0;
+	private static int winnermoves = 0;
+	private static String winner = "";
+	private static String winnerColor = "";
 	Game game;
 
 	public GameCore(PieceColor pieceColor, Game game, String WwritesBreads, String BwritesWreads) {		
@@ -157,8 +161,6 @@ public class GameCore {
 
 		else if(pieceColor.equals(PieceColor.WHITE)) {
 			boolean termination = false;
-			int mymoves = 0;
-			int opponentmoves = 0;
 			
 			GameCore.white_consumer = ConsumerCreator.createConsumer(BwritesWreads);
 			GameCore.white_producer = ProducerCreator.createProducer();
@@ -184,7 +186,7 @@ public class GameCore {
 						ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(WwritesBreads , dest_str);
 						white_producer.send(record);
 						game._gui.setFlag(0);
-						mymoves = mymoves + 1;
+						whitemoves = whitemoves + 1;
 						break;
 					}
 				}
@@ -217,7 +219,7 @@ public class GameCore {
 							termination = true;
 							break;
 						}
-						opponentmoves = opponentmoves + 1;
+						blackmoves = blackmoves + 1;
 						System.out.println(dest_str2); 
 						//JOptionPane.showMessageDialog(null, record.value());	
 					}
@@ -253,9 +255,16 @@ public class GameCore {
 				white_producer.close();
 				if(game.checkmatewhite == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
+					winnermoves = blackmoves;
+					winner = WwritesBreads;
+					winnerColor = PieceColor.BLACK.toString();
 				}
 				else if(game.checkmateblack == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, white player wins!!");
+					winnermoves = whitemoves;
+					winner = BwritesWreads;
+					winnerColor = PieceColor.WHITE.toString();
+
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Game Over, the game ends in draw!!");
@@ -271,6 +280,7 @@ public class GameCore {
 			consumeMessages(white_consumer);
 			white_consumer.close();
 			logout(BwritesWreads);
+			sendStats();
 		}
 		else{
 			black_producer.close();
@@ -302,7 +312,7 @@ public class GameCore {
 		}
 		
 	}
-
+	
 	public static void consumeMessages(Consumer<Long, String> consumer) {
 		int tries = 0;
 		while (tries < 1000) {
@@ -324,22 +334,23 @@ public class GameCore {
 		}
 	}
 
+	private static void sendStats() {
+		
+		ObjectNode node = new ObjectMapper().createObjectNode();
+		node.put("white", BwritesWreads);
+		node.put("black", WwritesBreads);
+		node.put("moves", winnermoves);
+		node.put("moves", winnermoves);
+		node.put("winner", winner);
+		node.put("winnerColor", winnerColor);
+		Client.create().resource(getBaseUrl() + "/endofgame").accept("application/json").type("application/json").post(ClientResponse.class, node.toString()).getStatus();
+	}
+	
 	private static void logout(String user) {
 		Client.create().resource(getBaseUrl() + "/logout/" + user).get(ClientResponse.class);
 	}
 
-	private static String getBaseUrl() {
-		String baseUrl = "";
-		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		InputStream input = classloader.getResourceAsStream("config.properties");
-		Properties properties = new Properties();
-		try {
-			properties.load(input);
-			baseUrl = properties.getProperty("restAddress");
-
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		return baseUrl;
+	private static String getBaseUrl () {
+		return RestServiceURL.getInstance ().getBaseUrl();
 	}
 }
