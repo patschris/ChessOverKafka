@@ -79,7 +79,7 @@ public class GameCore {
 						if(dest_str.equals("Leaving the game")) {
 							JOptionPane.showMessageDialog(null, "Your opponent left the game! Exiting...");
 							black_consumer.commitAsync();
-							winnermoves = blackmoves;
+							winnermoves = 0;
 							winner = black;
 							winnerColor = "black";
 							
@@ -229,7 +229,7 @@ public class GameCore {
 							JOptionPane.showMessageDialog(null, "Your opponent left the game! Exiting...");
 							white_consumer.commitAsync();
 
-							winnermoves = whitemoves;
+							winnermoves = 0;
 							winner = white;
 							winnerColor = "white";
 							
