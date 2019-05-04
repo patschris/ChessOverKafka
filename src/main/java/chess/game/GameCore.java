@@ -144,24 +144,26 @@ public class GameCore {
 			if(!termination) {
 				black_consumer.close();
 				black_producer.close();
-			}
-			
-			if(game.checkmatewhite == 1) {
-				JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
-			}
-			else if(game.checkmateblack == 1) {
-				JOptionPane.showMessageDialog(null, "Game Over, white player wins!!");
-			}
-			else {
-				JOptionPane.showMessageDialog(null, "Game Over, the game ends in draw!!");
+				if(game.checkmatewhite == 1) {
+					JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
+				}
+				else if(game.checkmateblack == 1) {
+					JOptionPane.showMessageDialog(null, "Game Over, white player wins!!");
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Game Over, the game ends in draw!!");
+				}
+
+				terminateGame();
 			}
 
+
 		}
-		
+
 
 		else if(pieceColor.equals(PieceColor.WHITE)) {
 			boolean termination = false;
-			
+
 			GameCore.white_consumer = ConsumerCreator.createConsumer(BwritesWreads);
 			GameCore.white_producer = ProducerCreator.createProducer();
 
@@ -215,6 +217,11 @@ public class GameCore {
 						if(dest_str2.equals("Leaving the game")) {
 							JOptionPane.showMessageDialog(null, "Your opponent left the game! Exiting...");
 							white_consumer.commitAsync();
+
+							winnermoves = whitemoves;
+							winner = BwritesWreads;
+							winnerColor = PieceColor.WHITE.toString();
+
 							terminateGame();
 							termination = true;
 							break;
@@ -270,7 +277,10 @@ public class GameCore {
 					JOptionPane.showMessageDialog(null, "Game Over, the game ends in draw!!");
 				}
 			}
+			terminateGame();
 		}
+
+
 	}
 
 	public static void terminateGame() {
@@ -310,9 +320,9 @@ public class GameCore {
 			black_consumer.close();
 			logout(WwritesBreads);
 		}
-		
+
 	}
-	
+
 	public static void consumeMessages(Consumer<Long, String> consumer) {
 		int tries = 0;
 		while (tries < 1000) {
@@ -335,7 +345,7 @@ public class GameCore {
 	}
 
 	private static void sendStats() {
-		
+
 		ObjectNode node = new ObjectMapper().createObjectNode();
 		node.put("white", BwritesWreads);
 		node.put("black", WwritesBreads);
@@ -345,7 +355,7 @@ public class GameCore {
 		node.put("winnerColor", winnerColor);
 		Client.create().resource(getBaseUrl() + "/endofgame").accept("application/json").type("application/json").post(ClientResponse.class, node.toString()).getStatus();
 	}
-	
+
 	private static void logout(String user) {
 		Client.create().resource(getBaseUrl() + "/logout/" + user).get(ClientResponse.class);
 	}

@@ -128,10 +128,10 @@ public class ChessGUI extends TopLevel {
 					label = "CHECKMATE, " + _game.turn().opposite().string()
 							+ " wins.";
 					if(_game.turn().opposite().string().equals(PieceColor.WHITE)) {
-						_game.checkmateblack = 1;
+						_game.checkmatewhite = 1;
 					}
 					else {
-						_game.checkmatewhite = 1;
+						_game.checkmateblack = 1;
 					}
 				}
 				else {
