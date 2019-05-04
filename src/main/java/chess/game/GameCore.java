@@ -27,8 +27,8 @@ public class GameCore {
 	private static Consumer<Long, String> black_consumer;
 	private static Producer<Long, String> white_producer;
 	private static Consumer<Long, String> white_consumer;
-	private static String WwritesBreads;
-	private static String BwritesWreads;
+	private static String white;
+	private static String black;
 	private static PieceColor pieceColor;
 	private static int  whitemoves = 0;
 	private static int blackmoves = 0;
@@ -40,8 +40,8 @@ public class GameCore {
 	public GameCore(PieceColor pieceColor, Game game, String WwritesBreads, String BwritesWreads) {		
 		GameCore.pieceColor = pieceColor;
 		this.game = game;
-		GameCore.BwritesWreads = BwritesWreads;
-		GameCore.WwritesBreads = WwritesBreads;
+		GameCore.white = WwritesBreads;
+		GameCore.black = BwritesWreads;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -151,13 +151,13 @@ public class GameCore {
 				if(game.checkmatewhite == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, white player wins!!");
 					winnermoves = whitemoves;
-					winner = BwritesWreads;
+					winner = white;
 					winnerColor = "white";
 				}
 				else if(game.checkmateblack == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
 					winnermoves = blackmoves;
-					winner = WwritesBreads;
+					winner = black;
 					winnerColor = "black";
 
 				}
@@ -270,13 +270,13 @@ public class GameCore {
 				if(game.checkmatewhite == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, white player wins!!");
 					winnermoves = whitemoves;
-					winner = BwritesWreads;
+					winner = white;
 					winnerColor = "white";
 				}
 				else if(game.checkmateblack == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
 					winnermoves = blackmoves;
-					winner = WwritesBreads;
+					winner = black;
 					winnerColor = "black";
 
 				}
@@ -296,14 +296,14 @@ public class GameCore {
 			white_producer.close();
 			consumeMessages(white_consumer);
 			white_consumer.close();
-			logout(BwritesWreads);
+			logout(white);
 			sendStats();
 		}
 		else{
 			black_producer.close();
 			consumeMessages(black_consumer);
 			black_consumer.close();
-			logout(WwritesBreads);
+			logout(black);
 		}
 	}
 
@@ -311,20 +311,20 @@ public class GameCore {
 	public static void terminateGamefromX() {
 		System.out.println("Terminating the Game from X!!");
 		if(pieceColor.equals(PieceColor.WHITE)) {
-			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(WwritesBreads , "Leaving the game");
+			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(black , "Leaving the game");
 			white_producer.send(record);
 			white_producer.close();
 			consumeMessages(white_consumer);
 			white_consumer.close();
-			logout(BwritesWreads);
+			logout(white);
 		}
 		else{
-			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(BwritesWreads , "Leaving the game");
+			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(white , "Leaving the game");
 			black_producer.send(record);
 			black_producer.close();
 			consumeMessages(black_consumer);
 			black_consumer.close();
-			logout(WwritesBreads);
+			logout(black);
 		}
 
 	}
@@ -353,8 +353,8 @@ public class GameCore {
 	private static void sendStats() {
 
 		ObjectNode node = new ObjectMapper().createObjectNode();
-		node.put("white", BwritesWreads);
-		node.put("black", WwritesBreads);
+		node.put("white", white);
+		node.put("black", black);
 		node.put("moves", winnermoves);
 		node.put("winner", winner);
 		node.put("winnerColor", winnerColor);
