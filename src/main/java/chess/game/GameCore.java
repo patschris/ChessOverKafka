@@ -83,14 +83,9 @@ public class GameCore {
 							winner = black;
 							winnerColor = "black";
 							
-							black_producer.close();
 							consumeMessages(black_consumer);
-							black_consumer.close();
-							logout(black);
-							
 							sendStats();
-							
-							terminateGame();
+
 							termination = true;
 							break;
 						}
@@ -147,7 +142,8 @@ public class GameCore {
 					game._gui.setMHmouse();
 					break;
 				}
-
+				
+				
 				game._gui.setMHturn();
 
 			}
@@ -169,7 +165,7 @@ public class GameCore {
 				else {
 					JOptionPane.showMessageDialog(null, "Game Over, the game ends in draw!!");
 				}
-				terminateGame();
+				
 			}
 
 
@@ -237,11 +233,9 @@ public class GameCore {
 							winner = white;
 							winnerColor = "white";
 							
-							white_producer.close();
 							consumeMessages(white_consumer);
-							white_consumer.close();
-							logout(white);
-
+							sendStats();
+							
 							termination = true;
 							break;
 						}
@@ -293,7 +287,9 @@ public class GameCore {
 				else {
 					JOptionPane.showMessageDialog(null, "Game Over, the game ends in draw!!");
 				}
-				terminateGame();
+				
+				sendStats();
+				
 			}
 			
 		}
