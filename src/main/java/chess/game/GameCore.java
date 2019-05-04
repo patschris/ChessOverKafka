@@ -142,8 +142,6 @@ public class GameCore {
 			}
 
 			if(!termination) {
-				black_consumer.close();
-				black_producer.close();
 				if(game.checkmatewhite == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
 				}
@@ -220,7 +218,7 @@ public class GameCore {
 
 							winnermoves = whitemoves;
 							winner = BwritesWreads;
-							winnerColor = PieceColor.WHITE.toString();
+							winnerColor = "white";
 
 							terminateGame();
 							termination = true;
@@ -258,19 +256,17 @@ public class GameCore {
 			}
 
 			if(!termination) {
-				white_consumer.close();
-				white_producer.close();
 				if(game.checkmatewhite == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, black player wins!!");
 					winnermoves = blackmoves;
 					winner = WwritesBreads;
-					winnerColor = PieceColor.BLACK.toString();
+					winnerColor = "black";
 				}
 				else if(game.checkmateblack == 1) {
 					JOptionPane.showMessageDialog(null, "Game Over, white player wins!!");
 					winnermoves = whitemoves;
 					winner = BwritesWreads;
-					winnerColor = PieceColor.WHITE.toString();
+					winnerColor = "white";
 
 				}
 				else {
