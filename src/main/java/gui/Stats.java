@@ -29,7 +29,6 @@ class Stats extends JFrame {
         whoAmI = user;
         setSize(700,300);
         setLayout(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getBaseUrl();
         addTitle();
         addTabs();
@@ -89,7 +88,7 @@ class Stats extends JFrame {
     }
 
     private void getBaseUrl () {
-        try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
+        try (FileInputStream fileInput = new FileInputStream(new File("src/main/resources/chess/configurations/config.properties"))) {
             Properties properties = new Properties();
             properties.load(fileInput);
             baseUrl = properties.getProperty("restAddress");
@@ -107,11 +106,11 @@ class Stats extends JFrame {
         ClientResponse response = Client.create().resource(baseUrl + "/gamestats").get(ClientResponse.class);
         GlobalStats globalStats = new Gson().fromJson(response.getEntity(String.class), GlobalStats.class);
         StringBuilder stats =  new StringBuilder("<html><body><h3>Global stats</h3>");
-        stats.append("Total games played : " + globalStats.getGamesPlayed() + "<p/>");
-        stats.append("Whites won : " + globalStats.getWhiteWon() + "<p/>");
-        stats.append("Black won : " + globalStats.getBlackWon() + "<p/>");
-        stats.append("Draws : " + globalStats.getDraws() + "<p/>");
-        stats.append("Average amount of moves to win : " + df.format(globalStats.getAvgMoves()) + "<p/></body></html>");
+        stats.append("Total games played : ").append(globalStats.getGamesPlayed()).append("<p/>");
+        stats.append("Whites won : ").append(globalStats.getWhiteWon()).append("<p/>");
+        stats.append("Black won : ").append(globalStats.getBlackWon()).append("<p/>");
+        stats.append("Draws : ").append(globalStats.getDraws()).append("<p/>");
+        stats.append("Average amount of moves to win : ").append(df.format(globalStats.getAvgMoves())).append("<p/></body></html>");
         return stats.toString();
     }
 
@@ -119,12 +118,12 @@ class Stats extends JFrame {
         ClientResponse response = Client.create().resource(baseUrl + "/personalstats/" + whoAmI).get(ClientResponse.class);
         PersonalStats personalStats = new Gson().fromJson(response.getEntity(String.class), PersonalStats.class);
         StringBuilder stats =  new StringBuilder("<html><body><h3>Your stats</h3>");
-        stats.append("Games played : " + personalStats.getGamesPlayed()).append("<p/>");
-        stats.append("Wins : " + personalStats.getGamesWon()).append("<p/>");
-        stats.append("Defeats : " + personalStats.getGamesLost()).append("<p/>");
+        stats.append("Games played : ").append(personalStats.getGamesPlayed()).append("<p/>");
+        stats.append("Wins : ").append(personalStats.getGamesWon()).append("<p/>");
+        stats.append("Defeats : ").append(personalStats.getGamesLost()).append("<p/>");
         stats.append("Draws : ").append(personalStats.getDraws()).append("<p/>");
-        stats.append("Games played as white : " + personalStats.getWhite()).append("<p/>");
-        stats.append("Games played as black : " + personalStats.getBlack()).append("<p/>");
+        stats.append("Games played as white : ").append(personalStats.getWhite()).append("<p/>");
+        stats.append("Games played as black : ").append(personalStats.getBlack()).append("<p/>");
         stats.append("Average amount of moves : ").append(df.format(personalStats.getAvgMoves())).append("<p/></body></html>");
         return stats.toString();
     }

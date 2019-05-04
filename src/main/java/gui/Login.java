@@ -23,6 +23,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
+import security.RestServiceURL;
 import security.SecurePassword;
 
 public class Login extends JFrame {
@@ -130,16 +131,7 @@ public class Login extends JFrame {
 	}
 
 	private void getBaseUrl () {
-
-		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		InputStream input = classloader.getResourceAsStream("config.properties");
-		Properties properties = new Properties();
-		try {
-			properties.load(input);
-			baseUrl = properties.getProperty("restAddress");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		baseUrl = RestServiceURL.getInstance ().getBaseUrl();
 	}
 
 	/**

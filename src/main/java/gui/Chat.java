@@ -68,25 +68,20 @@ public class Chat extends JFrame{
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-						//System.out.println("NO message... trying to read from..." + myself  + "Chat");
 						continue;
 					}
 					for(ConsumerRecord<Long, String> record: consumerRecords) {
 
-						msg = (String) record.value();
+						msg = record.value();
 						Message m = new Message(opponent, msg);
 
-						SwingUtilities.invokeLater(new Runnable() {
-							public void run() {
-								try {
-									addMessage(m, myself);
-								} catch (BadLocationException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								chatMemory.add(m);
-
+						SwingUtilities.invokeLater(() -> {
+							try {
+								addMessage(m, myself);
+							} catch (BadLocationException e) {
+								e.printStackTrace();
 							}
+							chatMemory.add(m);
 						});
 
 
@@ -171,7 +166,6 @@ public class Chat extends JFrame{
 			try {
 				TimeUnit.SECONDS.sleep(1);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -206,7 +200,7 @@ public class Chat extends JFrame{
 		public void actionPerformed(ActionEvent actionEvent) {
 			try {
 				enterPressed();
-			} 
+			}
 			catch (BadLocationException e) {
 				e.printStackTrace();
 			}

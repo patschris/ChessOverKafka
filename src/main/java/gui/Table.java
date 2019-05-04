@@ -47,6 +47,7 @@ import chess.game.GameCore;
 import chess.pieces.PieceColor;
 import kafka_consumer_producer.ConsumerCreator;
 import kafka_consumer_producer.ProducerCreator;
+import security.RestServiceURL;
 
 public class Table extends JFrame {
 
@@ -69,29 +70,34 @@ public class Table extends JFrame {
 	public Table(String userLoggedIn) {
 		super("Table");
 		whoAmI = userLoggedIn;
-		setSize(700,300);	// size of login window
-		setLayout(null);	// no default layout is used
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	// close operation
-		addTitle();
-		createDropDown();
-
-		createSubtitle();
-		addImageLabel();
-		addList();
-		addButtons();
-
 		getBaseUrl();
+		setSize(700,300);
+		setLayout(null);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent){
-				destroyMyTable();
-				logout();
-				System.exit(0);
+				exitFunction();
 			}
 		});
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
 		setResizable(false);
+		constructGraphicDetails();
 		setVisible(true);
+	}
+
+	private void exitFunction() {
+		destroyMyTable();
+		logout();
+		System.exit(0);
+	}
+
+	private void constructGraphicDetails() {
+		addTitle();
+		createDropDown();
+		createSubtitle();
+		addImageLabel();
+		addList();
+		addButtons();
 	}
 
 	/**
@@ -143,45 +149,53 @@ public class Table extends JFrame {
 		scrollPane.setVisible(false);
 	}
 
-	private void addButtons(){
-		clearButton = new JButton("Clear");		//	creates Clear button,
-		clearButton.setSize(100, 30);		//	sets its size and location
+	private void addClearButton() {
+		clearButton = new JButton("Clear");
+		clearButton.setSize(100, 30);
 		clearButton.setLocation(220, 225);
-		clearButton.addActionListener(event -> list.clearSelection());	// sets listener for Cancel button
-		submitButton = new JButton("Play");		// 	creates Login button
+		clearButton.addActionListener(event -> list.clearSelection());
+		add(clearButton);
+		clearButton.setVisible(false);
+	}
+
+	private void addSubmitButton() {
+		submitButton = new JButton("Play");
 		submitButton.setSize(100, 30);
 		submitButton.setLocation(350, 225);
-		submitButton.addActionListener(event -> selectOpponent());	// sets listener for Submit button
+		submitButton.addActionListener(event -> selectOpponent());
+		add(submitButton);
+		submitButton.setVisible(false);
+	}
+
+	private void addRefreshButton() {
 		URL url = this.getClass().getResource("/chess/images/gui/refresh.png");
 		ImageIcon icon = new ImageIcon(url);
 		refreshButton = new JButton(icon);
 		refreshButton.setSize(50,50);
 		refreshButton.setLocation(560, 120);
 		refreshButton.addActionListener(event -> getOpponents());
+		add(refreshButton);
+		refreshButton.setVisible(false);
+	}
+
+	private void addStatsButton() {
 		statsButton = new JButton("See stats");
 		statsButton.setSize(100, 30);
 		statsButton.setLocation(300, 180);
 		statsButton.addActionListener(event -> {dispose(); new Stats(whoAmI);});
-		add(clearButton);
-		add(submitButton);
-		add(refreshButton);
 		add(statsButton);
-		clearButton.setVisible(false);
-		submitButton.setVisible(false);
-		refreshButton.setVisible(false);
 		statsButton.setVisible(true);
 	}
 
+	private void addButtons(){
+		addClearButton();
+		addSubmitButton();
+		addRefreshButton();
+		addStatsButton();
+	}
+
 	private void getBaseUrl () {
-		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		InputStream input = classloader.getResourceAsStream("config.properties");
-		Properties properties = new Properties();
-		try {
-			properties.load(input);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		baseUrl = properties.getProperty("restAddress");
+		baseUrl = RestServiceURL.getInstance ().getBaseUrl();
 	}
 
 	private void destroyMyTable () {
@@ -201,11 +215,8 @@ public class Table extends JFrame {
 	}
 
 	private void createNewGameTable() {
-		ObjectNode objectNode = new ObjectMapper().createObjectNode();
-		objectNode.put("white", whoAmI);
-		objectNode.put("black",  opponent);
-		WebResource webResource = Client.create().resource(baseUrl + "/newgametable");
-		webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
+		ObjectNode node = new ObjectMapper().createObjectNode().put("white", whoAmI).put("black", opponent);
+		Client.create().resource(baseUrl + "/newgametable").accept("application/json").type("application/json").post(ClientResponse.class, node.toString());
 	}
 
 	private void getOpponents () {
@@ -213,14 +224,13 @@ public class Table extends JFrame {
 		JsonArray players = new JsonParser().parse(response.getEntity(String.class)).getAsJsonArray();
 		model.clear();
 		for (JsonElement player:players) {
-			String optionalOpponent = player.getAsJsonObject().get("name").getAsString();
-			model.addElement(optionalOpponent);
+			model.addElement(player.getAsJsonObject().get("name").getAsString());
 		}
 	}
 
 
 	private void selectOpponent() {
-		String opponent = (String) list.getSelectedValue();
+		String opponent = list.getSelectedValue();
 		if (opponent == null) {
 			JOptionPane.showMessageDialog(null, "No opponent selected");
 		}
@@ -254,13 +264,8 @@ public class Table extends JFrame {
 				}
 
 				@Override
-				protected void done() {
-
-				}
+				protected void done() {}
 			}.execute();
-
-
-
 		}
 	}
 
@@ -269,7 +274,6 @@ public class Table extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
-			@SuppressWarnings("unchecked")
 			JComboBox<String> combo = (JComboBox<String>) actionEvent.getSource();
 			String selectedOption = (String) combo.getSelectedItem();
 			if (selectedOption.equals("Create table")) {
@@ -293,8 +297,6 @@ public class Table extends JFrame {
 			statsButton.setVisible(false);
 			new SwingWorker<Void, Void>() {
 				protected Void doInBackground() throws InterruptedException {
-					
-					
 					addTopics();
 					
 					Consumer<Long, String> white_consumer = ConsumerCreator.createConsumer(whoAmI);
@@ -314,7 +316,7 @@ public class Table extends JFrame {
 							continue;
 						}
 						for(ConsumerRecord<Long, String> record: consumerRecords) {
-							msg = (String) record.value();
+							msg = record.value();
 							System.out.println(msg);
 							//JOptionPane.showMessageDialog(null, record.value());	
 						}
@@ -338,21 +340,15 @@ public class Table extends JFrame {
 					Game g = new Game(PieceColor.WHITE, whoAmI, opponent);
 					GameCore gamec = new GameCore(PieceColor.WHITE, g, whoAmI, opponent);
 					gamec.startgame(whoAmI, opponent);
-
 					g._gui.frame.setVisible(false);
 					g._gui.frame.dispose();
-
 					dispose();
-
 					new Table(whoAmI);
-
 					return null;
 				}
 
 				@Override
-				protected void done() {
-
-				}
+				protected void done() {}
 			}.execute();
 		}
 
@@ -376,5 +372,4 @@ public class Table extends JFrame {
 			}.execute();
 		}
 	}
-
 }
