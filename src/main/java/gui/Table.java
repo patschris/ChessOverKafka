@@ -180,8 +180,8 @@ public class Table extends JFrame {
 
 	private void addStatsButton() {
 		statsButton = new JButton("See stats");
-		statsButton.setSize(100, 30);
-		statsButton.setLocation(300, 180);
+		statsButton.setSize(120, 30);
+		statsButton.setLocation(285, 180);
 		statsButton.addActionListener(event -> {dispose(); new Stats(whoAmI);});
 		add(statsButton);
 		statsButton.setVisible(true);
