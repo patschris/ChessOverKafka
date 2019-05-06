@@ -91,6 +91,8 @@ public class GameCore {
 							winner = black;
 							winnerColor = "black";
 							
+							logout(black);
+							
 							consumeMessages(black_consumer);
 							sendStats();
 
@@ -144,6 +146,9 @@ public class GameCore {
 						break;
 					}
 				}
+				
+				TimeUnit.SECONDS.sleep(1);
+				
 				//repeat the procedure
 				//check if game is over
 				if(game.checkGameOver() == 1) {
@@ -176,6 +181,7 @@ public class GameCore {
 				
 			}
 			
+			logout(black);
 			game._gui.noVisible();
 			consumeMessages(black_consumer);
 			black_consumer.close();
@@ -226,7 +232,7 @@ public class GameCore {
 				while(true){
 					ConsumerRecords<Long, String> consumerRecords2 = white_consumer.poll(1);
 					if (consumerRecords2.count() == 0) { 
-						TimeUnit.SECONDS.sleep(1);
+						Thread.sleep(30);
 						//System.out.println("NO message... trying to read from..." + BwritesWreads);
 						continue;
 					}
@@ -243,6 +249,8 @@ public class GameCore {
 							winnermoves = 0;
 							winner = white;
 							winnerColor = "white";
+							
+							logout(white);
 							
 							consumeMessages(white_consumer);
 							sendStats();
@@ -265,6 +273,8 @@ public class GameCore {
 					//white_consumer.close();
 					break;
 				}
+				
+				
 				if (termination) {
 					break;
 				}
@@ -303,6 +313,8 @@ public class GameCore {
 				
 			}
 			
+			
+			logout(white);
 			game._gui.noVisible();
 			consumeMessages(white_consumer);
 			white_consumer.close();

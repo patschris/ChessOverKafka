@@ -1,6 +1,5 @@
 package gui;
 
-import kafka_consumer_producer.ConsumerCreator;
 import kafka_consumer_producer.ProducerCreator;
 import structures.ChatMemory;
 import structures.Message;
@@ -17,8 +16,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
-import chess.game.GameCore;
-
 import java.awt.*;
 import java.awt.event.*;
 
@@ -33,27 +30,24 @@ public class Chat extends JFrame{
 	private ChatMemory chatMemory = ChatMemory.getInstance();
 	private String myself;
 	private String opponent;
-	private static Consumer<Long, String> myconsumer;
 	private Thread t;
 	private volatile boolean isRunning = true;
 	
-	public Chat(String myself, String opponent) throws  BadLocationException {
+	public Chat(String myself, String opponent, Consumer<Long, String> chat_consumer) throws  BadLocationException {
 		super("Chat");
 		
 		this.myself = myself;
 		this.opponent = opponent;
-		Chat.myconsumer = ConsumerCreator.createConsumer(myself + "Chat");
-		GameCore.consumeMessages(myconsumer);
+
 		
 		setSize(700,300);	// size of login window
 		setLayout(null);	// no default layout is used
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent windowEvent){
-				setVisible(false);
-				isRunning = false;
-				myconsumer.close();
-				
-			}
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+		        isRunning = false;
+		        
+		    }
 		});
 		setLocation(5, BOARD + 70);
 		setResizable(false);
@@ -70,7 +64,7 @@ public class Chat extends JFrame{
 				String msg = "";
 				while (isRunning) {
 					@SuppressWarnings("deprecation")
-					ConsumerRecords<Long, String> consumerRecords = myconsumer.poll(10);
+					ConsumerRecords<Long, String> consumerRecords = chat_consumer.poll(10);
 					if (consumerRecords.count() == 0) {
 						try {
 							Thread.sleep(1000);
@@ -96,10 +90,10 @@ public class Chat extends JFrame{
 
 					}
 					// commits the offset of record to broker.
-					myconsumer.commitAsync();	
+					chat_consumer.commitAsync();	
 				}
 				
-				System.out.println("Thread is dying...");
+				System.out.println("Chat thread is dying...");
 
 			}
 		});

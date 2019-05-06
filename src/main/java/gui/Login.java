@@ -13,12 +13,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import org.apache.kafka.clients.consumer.Consumer;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+
+import kafka_consumer_producer.ConsumerCreator;
 import security.RestServiceURL;
 import security.SecurePassword;
 
@@ -146,7 +150,8 @@ public class Login extends JFrame {
 			switch (webResource.accept("application/json").type("application/json").post(ClientResponse.class, node.toString()).getStatus()) {
 			case 200:	
 				dispose();
-				new Table(username);
+				Consumer<Long, String> chat_consumer = ConsumerCreator.createConsumer(username + "Chat");
+				new Table(username, chat_consumer);
 				break;
 			case 400:
 				JOptionPane.showMessageDialog(this, "Incorrect username or password\nPlease try again");

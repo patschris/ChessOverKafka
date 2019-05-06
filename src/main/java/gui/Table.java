@@ -64,24 +64,41 @@ public class Table extends JFrame {
 	private JButton refreshButton;
 	private JButton statsButton;
 	private Chat chat;
-	private volatile boolean isFound = false;
+	private Consumer<Long, String> chat_consumer;
+	
+	//chat worker
+	@SuppressWarnings("rawtypes")
+	SwingWorker chat_worker = new SwingWorker<Void, Void>() {
 
-	public Table(String userLoggedIn) {
+		@Override
+		protected Void doInBackground() throws Exception {
+			chat = new Chat(whoAmI,opp,chat_consumer);
+			return null;
+		}
+
+
+	};
+	
+	public Table(String userLoggedIn, Consumer<Long, String> chat_consumer){
 		super("Table");
 		whoAmI = userLoggedIn;
+		this.chat_consumer = chat_consumer;
 		getBaseUrl();
 		setSize(700,300);
 		setLayout(null);
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent windowEvent){
-				exitFunction();
-			}
-		});
+		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
 		setResizable(false);
 		constructGraphicDetails();
 		setVisible(true);
+		
+		
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent windowEvent){
+				exitFunction();
+			}
+		});
 	}
 
 	private void exitFunction() {
@@ -181,7 +198,7 @@ public class Table extends JFrame {
 		statsButton = new JButton("See stats");
 		statsButton.setSize(120, 30);
 		statsButton.setLocation(285, 180);
-		statsButton.addActionListener(event -> {dispose(); new Stats(whoAmI);});
+		statsButton.addActionListener(event -> {dispose(); new Stats(whoAmI,chat_consumer);});
 		add(statsButton);
 		statsButton.setVisible(true);
 	}
@@ -260,7 +277,7 @@ public class Table extends JFrame {
 					g._gui.frame.setVisible(false);
 					g._gui.frame.dispose();
 					chat.dispose();
-					new Table(whoAmI);
+					System.exit(0);
 					return null;
 				}
 
@@ -272,7 +289,7 @@ public class Table extends JFrame {
 
 				@Override
 				protected Void doInBackground() throws Exception {
-					chat = new Chat(whoAmI,opp);
+					chat = new Chat(whoAmI,opp, chat_consumer);
 					return null;
 				}
 
@@ -315,7 +332,7 @@ public class Table extends JFrame {
 				protected Void doInBackground() throws InterruptedException, BadLocationException {
 
 					addTopics();
-
+					
 					Consumer<Long, String> white_consumer = ConsumerCreator.createConsumer(whoAmI);
 					//consume any left messages
 					GameCore.consumeMessages(white_consumer);
@@ -328,7 +345,7 @@ public class Table extends JFrame {
 						ConsumerRecords<Long, String> consumerRecords = white_consumer.poll(10);
 						if (consumerRecords.count() == 0) {
 							try {
-								Thread.sleep(100);
+								Thread.sleep(10);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
@@ -337,7 +354,7 @@ public class Table extends JFrame {
 						for(ConsumerRecord<Long, String> record: consumerRecords) {
 							msg = record.value();
 							opp = msg;
-							isFound = true;
+							
 							System.out.println(msg);
 							//JOptionPane.showMessageDialog(null, record.value());	
 						}
@@ -359,15 +376,16 @@ public class Table extends JFrame {
 					dispose();
 					createNewGameTable();
 					destroyMyTable();
-
-					Game g = new Game(PieceColor.WHITE, whoAmI, opp);
-					GameCore gamec = new GameCore(PieceColor.WHITE, g, whoAmI, opp);
 					
+					Game g = new Game(PieceColor.WHITE, whoAmI, opp);
+					chat_worker.execute();
+					
+					GameCore gamec = new GameCore(PieceColor.WHITE, g, whoAmI, opp);
 					gamec.startgame(whoAmI, opp);
 					g._gui.frame.setVisible(false);
 					g._gui.frame.dispose();
 					chat.dispose();
-					new Table(whoAmI);
+					System.exit(0);
 					return null;
 				}
 
@@ -376,23 +394,6 @@ public class Table extends JFrame {
 
 			}.execute();
 			
-			
-			
-			//CHAT WORKER
-			new SwingWorker<Void, Void>() {
-
-				@Override
-				protected Void doInBackground() throws Exception {
-					while(!isFound) {
-						Thread.sleep(100);
-					}
-					chat = new Chat(whoAmI,opp);
-					return null;
-				}
-
-
-			}.execute();
-
 
 		}
 
