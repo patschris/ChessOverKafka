@@ -160,9 +160,8 @@ class Register extends JFrame {
 		}
 		else {
 			ObjectNode objectNode = new ObjectMapper().createObjectNode();
-			objectNode.put("name", userField.getText());
-			objectNode.put("password",  SecurePassword.sha256(passwordField.getText()));
-			clear();
+			objectNode.put("name", username);
+			objectNode.put("password", password);
 			try {
 				ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 			    InputStream input = classloader.getResourceAsStream("config.properties");
