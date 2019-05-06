@@ -3,9 +3,7 @@ package chess.chessgui;
 import chess.game.Game;
 import chess.pieces.Piece;
 import chess.pieces.PieceColor;
-import gui.Chat;
 import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
 import java.awt.event.MouseEvent;
 import static chess.chessgui.GameDisplay.CELL;
 import static chess.chessgui.GameDisplay.MARGIN;
@@ -44,20 +42,12 @@ public class ChessGUI extends TopLevel {
 		_display = new GameDisplay(game);
 		add(_display, new LayoutSpec("y", 2, "width", 2));
 		
-		
-		new SwingWorker<Void, Void>() {
-
-			@Override
-			protected Void doInBackground() throws Exception {
-				new Chat(myself,opponent);
-				return null;
-			}
-			
-			
-		}.execute();
-		
 		display(true);
 
+	}
+	
+	public void noVisible() {
+		frame.setVisible(false);
 	}
 	
 	public void setMHmouse() {

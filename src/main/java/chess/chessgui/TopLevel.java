@@ -36,6 +36,7 @@ public class TopLevel implements ActionListener {
 						"Are you sure you want to close this window?", "Close Window?", 
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+					frame.setVisible(false);
 					GameCore.terminateGamefromX();
 					System.exit(0);
 				}

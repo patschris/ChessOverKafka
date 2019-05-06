@@ -17,9 +17,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
+import chess.game.GameCore;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.util.concurrent.TimeUnit;
 
 import static chess.chessgui.GameDisplay.BOARD;
 
@@ -32,17 +33,25 @@ public class Chat extends JFrame{
 	private ChatMemory chatMemory = ChatMemory.getInstance();
 	private String myself;
 	private String opponent;
-
+	private static Consumer<Long, String> myconsumer;
+	private Thread t;
+	private volatile boolean isRunning = true;
+	
 	public Chat(String myself, String opponent) throws  BadLocationException {
 		super("Chat");
 		
 		this.myself = myself;
 		this.opponent = opponent;
+		Chat.myconsumer = ConsumerCreator.createConsumer(myself + "Chat");
+		GameCore.consumeMessages(myconsumer);
 		
 		setSize(700,300);	// size of login window
 		setLayout(null);	// no default layout is used
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent){
+				setVisible(false);
+				isRunning = false;
+				myconsumer.close();
 				
 			}
 		});
@@ -55,12 +64,11 @@ public class Chat extends JFrame{
 		setVisible(true);
 		
 		// Runs outside of the Swing UI thread
-		new Thread(new Runnable() {
+		t = new Thread(new Runnable() {
 			public void run() {
 
-				Consumer<Long, String> myconsumer = ConsumerCreator.createConsumer(myself + "Chat");
 				String msg = "";
-				while (true) {
+				while (isRunning) {
 					@SuppressWarnings("deprecation")
 					ConsumerRecords<Long, String> consumerRecords = myconsumer.poll(10);
 					if (consumerRecords.count() == 0) {
@@ -90,9 +98,12 @@ public class Chat extends JFrame{
 					// commits the offset of record to broker.
 					myconsumer.commitAsync();	
 				}
+				
+				System.out.println("Thread is dying...");
 
 			}
-		}).start();
+		});
+		t.start();
 
 	}
 
@@ -163,12 +174,6 @@ public class Chat extends JFrame{
 
 			System.out.println("Produced message to topic : " + opponent + "Chat");
 
-			//wait 1 second, in order not to overload chat
-			try {
-				TimeUnit.SECONDS.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 
 		}
 	}

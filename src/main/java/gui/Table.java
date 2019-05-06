@@ -8,7 +8,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -23,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingWorker;
+import javax.swing.text.BadLocationException;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -51,7 +51,7 @@ public class Table extends JFrame {
 	private static final long serialVersionUID = 886705961481791855L;
 	public String baseUrl;
 	private String whoAmI;
-	private String opponent;
+	private String opp;
 	private JLabel title;
 	private JLabel subtitle;
 	private JLabel gifLabel;
@@ -63,6 +63,8 @@ public class Table extends JFrame {
 	private JButton submitButton;
 	private JButton refreshButton;
 	private JButton statsButton;
+	private Chat chat;
+	private volatile boolean isFound = false;
 
 	public Table(String userLoggedIn) {
 		super("Table");
@@ -212,7 +214,7 @@ public class Table extends JFrame {
 	}
 
 	private void createNewGameTable() {
-		ObjectNode node = new ObjectMapper().createObjectNode().put("white", whoAmI).put("black", opponent);
+		ObjectNode node = new ObjectMapper().createObjectNode().put("white", whoAmI).put("black", opp);
 		Client.create().resource(baseUrl + "/newgametable").accept("application/json").type("application/json").post(ClientResponse.class, node.toString());
 	}
 
@@ -243,9 +245,11 @@ public class Table extends JFrame {
 			System.out.println("Iam: " + whoAmI);
 			System.out.println("Opponent: " + opponent);
 
+			this.opp = opponent;
+
 			//begin the game
 			System.out.println("Ready to play!");
-			
+
 			new SwingWorker<Void, Void>() {
 
 				@Override
@@ -255,7 +259,7 @@ public class Table extends JFrame {
 					gamec.startgame(opponent , whoAmI);
 					g._gui.frame.setVisible(false);
 					g._gui.frame.dispose();
-					dispose();
+					chat.dispose();
 					new Table(whoAmI);
 					return null;
 				}
@@ -263,6 +267,18 @@ public class Table extends JFrame {
 				@Override
 				protected void done() {}
 			}.execute();
+
+			new SwingWorker<Void, Void>() {
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					chat = new Chat(whoAmI,opp);
+					return null;
+				}
+
+
+			}.execute();
+
 		}
 	}
 
@@ -293,62 +309,91 @@ public class Table extends JFrame {
 			subtitle.setText("Wait for an opponent");
 			gifLabel.setVisible(true);
 			statsButton.setVisible(false);
+
+			//game worker
 			new SwingWorker<Void, Void>() {
-				protected Void doInBackground() throws InterruptedException {
+				protected Void doInBackground() throws InterruptedException, BadLocationException {
+
 					addTopics();
-					
+
 					Consumer<Long, String> white_consumer = ConsumerCreator.createConsumer(whoAmI);
 					//consume any left messages
 					GameCore.consumeMessages(white_consumer);
 
-					//create the white_consumer and wait for someone to join you
-					String msg = "";
-
+					String msg = ""; 
 					createMyTable();
 					System.out.println("Waiting For Message!");
 					while (true) {
 						@SuppressWarnings("deprecation")
 						ConsumerRecords<Long, String> consumerRecords = white_consumer.poll(10);
 						if (consumerRecords.count() == 0) {
-							TimeUnit.SECONDS.sleep(1);
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
 							continue;
 						}
 						for(ConsumerRecord<Long, String> record: consumerRecords) {
 							msg = record.value();
+							opp = msg;
+							isFound = true;
 							System.out.println(msg);
 							//JOptionPane.showMessageDialog(null, record.value());	
 						}
 						// commits the offset of record to broker.
 						white_consumer.commitAsync();
+						//chat worker
+						
 						break;
 					}
-					
+
 					white_consumer.close();
 
-					setVisible(false);
-
-					TimeUnit.SECONDS.sleep(1);
-
-					opponent = msg;
+					
 					System.out.println("Iam: " + whoAmI);
-					System.out.println("Opponent: " + opponent);
+					System.out.println("Opponent: " + opp);
 					System.out.println("Ready to play!");
+
+					setVisible(false);
 					dispose();
 					createNewGameTable();
 					destroyMyTable();
-					Game g = new Game(PieceColor.WHITE, whoAmI, opponent);
-					GameCore gamec = new GameCore(PieceColor.WHITE, g, whoAmI, opponent);
-					gamec.startgame(whoAmI, opponent);
+
+					Game g = new Game(PieceColor.WHITE, whoAmI, opp);
+					GameCore gamec = new GameCore(PieceColor.WHITE, g, whoAmI, opp);
+					
+					gamec.startgame(whoAmI, opp);
 					g._gui.frame.setVisible(false);
 					g._gui.frame.dispose();
-					dispose();
+					chat.dispose();
 					new Table(whoAmI);
 					return null;
 				}
 
 				@Override
 				protected void done() {}
+
 			}.execute();
+			
+			
+			
+			//CHAT WORKER
+			new SwingWorker<Void, Void>() {
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					while(!isFound) {
+						Thread.sleep(100);
+					}
+					chat = new Chat(whoAmI,opp);
+					return null;
+				}
+
+
+			}.execute();
+
+
 		}
 
 		private void onJoinTableSelected(){
