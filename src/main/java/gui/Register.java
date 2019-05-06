@@ -42,7 +42,6 @@ class Register extends JFrame {
 		constructGraphicDetails();
 		setResizable(false);
 		setVisible(true);
-		getBaseUrl();
 	}
 
 	private void constructGraphicDetails() {
@@ -199,17 +198,6 @@ class Register extends JFrame {
 	private void back() {
 		dispose();
 		new Login();
-	}
-
-	private void getBaseUrl() {
-		try (FileInputStream fileInput = new FileInputStream( new File("src/main/resources/chess/configurations/config.properties"))) {
-			Properties properties = new Properties();
-			properties.load(fileInput);
-			properties.getProperty("restAddress");
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
