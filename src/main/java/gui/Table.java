@@ -232,6 +232,7 @@ public class Table extends JFrame {
 			JOptionPane.showMessageDialog(null, "No opponent selected");
 		}
 		else {
+			setVisible(false);
 			addTopics();
 			//send your name to your opponent
 			Producer<Long, String> black_producer = ProducerCreator.createProducer();
@@ -244,8 +245,7 @@ public class Table extends JFrame {
 
 			//begin the game
 			System.out.println("Ready to play!");
-			setVisible(false);
-
+			
 			new SwingWorker<Void, Void>() {
 
 				@Override
@@ -322,6 +322,8 @@ public class Table extends JFrame {
 						white_consumer.commitAsync();
 						break;
 					}
+					
+					white_consumer.close();
 
 					setVisible(false);
 

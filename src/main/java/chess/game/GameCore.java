@@ -42,15 +42,6 @@ public class GameCore {
 		this.game = game;
 		GameCore.white = WwritesBreads;
 		GameCore.black = BwritesWreads;
-		if(pieceColor.equals(PieceColor.BLACK)) {
-			GameCore.black_consumer = ConsumerCreator.createConsumer(WwritesBreads);
-			consumeMessages(black_consumer);
-		}
-		else {
-			GameCore.white_consumer = ConsumerCreator.createConsumer(BwritesWreads);
-			consumeMessages(white_consumer);
-		}
-		
 	}
 
 	@SuppressWarnings("deprecation")
@@ -62,8 +53,11 @@ public class GameCore {
 
 			boolean termination = false;
 
+			GameCore.black_consumer = ConsumerCreator.createConsumer(WwritesBreads);
 			GameCore.black_producer = ProducerCreator.createProducer();
-			
+
+			consumeMessages(black_consumer);
+
 			//white's turn
 			game._gui.setMHturn();
 
@@ -181,7 +175,10 @@ public class GameCore {
 		else if(pieceColor.equals(PieceColor.WHITE)) {
 			boolean termination = false;
 
+			GameCore.white_consumer = ConsumerCreator.createConsumer(BwritesWreads);
 			GameCore.white_producer = ProducerCreator.createProducer();
+
+			consumeMessages(white_consumer);
 
 			game._gui.setMHmouse();
 
@@ -299,20 +296,6 @@ public class GameCore {
 
 
 	}
-
-	public static void terminateGame() {
-		System.out.println("Terminating the Game");
-		if(pieceColor.equals(PieceColor.WHITE)) {
-			consumeMessages(white_consumer);
-			logout(white);
-			sendStats();
-		}
-		else{
-			consumeMessages(black_consumer);
-			logout(black);
-		}
-	}
-
 
 	public static void terminateGamefromX() {
 		System.out.println("Terminating the Game from X!!");
