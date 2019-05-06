@@ -3,6 +3,7 @@ package gui;
 import com.google.gson.*;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
+import security.RestServiceURL;
 import structures.GlobalStats;
 import structures.PersonalStats;
 
@@ -34,7 +35,6 @@ class Stats extends JFrame {
         this.chat_consumer = chat_consumer;
         setSize(700,300);
         setLayout(null);
-        getBaseUrl();
         addTitle();
         addTabs();
         addButton();
@@ -48,6 +48,7 @@ class Stats extends JFrame {
         setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
         setResizable(false);
         setVisible(true);
+        baseUrl = RestServiceURL.getInstance().getBaseUrl();
     }
 
     private void addTitle(){
@@ -92,16 +93,6 @@ class Stats extends JFrame {
         new Table(whoAmI, chat_consumer);
     }
 
-    private void getBaseUrl () {
-        try (FileInputStream fileInput = new FileInputStream(new File("src/main/resources/chess/configurations/config.properties"))) {
-            Properties properties = new Properties();
-            properties.load(fileInput);
-            baseUrl = properties.getProperty("restAddress");
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void logout () {
         Client.create().resource(baseUrl + "/logout/" + whoAmI).get(ClientResponse.class);
