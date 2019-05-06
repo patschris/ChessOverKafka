@@ -37,18 +37,18 @@ public class GameCore {
 	private static String winnerColor = "";
 	Game game;
 
-	public GameCore(PieceColor pieceColor, Game game, String WwritesBreads, String BwritesWreads,Consumer<Long, String> consumer) {		
+	public GameCore(PieceColor pieceColor, Game game, String WwritesBreads, String BwritesWreads) {		
 		GameCore.pieceColor = pieceColor;
 		this.game = game;
 		GameCore.white = WwritesBreads;
 		GameCore.black = BwritesWreads;
-		if(consumer.toString().equals(BwritesWreads)) {
-			white_consumer = consumer;	
-			consumeMessages(white_consumer);
+		if(pieceColor.equals(PieceColor.BLACK)) {
+			GameCore.black_consumer = ConsumerCreator.createConsumer(WwritesBreads);
+			consumeMessages(black_consumer);
 		}
 		else {
-			black_consumer = consumer;
-			consumeMessages(black_consumer);
+			GameCore.white_consumer = ConsumerCreator.createConsumer(BwritesWreads);
+			consumeMessages(white_consumer);
 		}
 		
 	}
@@ -63,9 +63,7 @@ public class GameCore {
 			boolean termination = false;
 
 			GameCore.black_producer = ProducerCreator.createProducer();
-
 			
-
 			//white's turn
 			game._gui.setMHturn();
 
@@ -183,10 +181,7 @@ public class GameCore {
 		else if(pieceColor.equals(PieceColor.WHITE)) {
 			boolean termination = false;
 
-			GameCore.white_consumer = ConsumerCreator.createConsumer(BwritesWreads);
 			GameCore.white_producer = ProducerCreator.createProducer();
-
-			consumeMessages(white_consumer);
 
 			game._gui.setMHmouse();
 

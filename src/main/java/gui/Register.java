@@ -3,11 +3,6 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,7 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import security.RestServiceURL;
 import security.SecurePassword;
 
 
@@ -31,6 +26,7 @@ class Register extends JFrame {
 	private JTextField userField;
 	private JTextField passwordField;
 	private JTextField repeatPasswordField;
+	private String baseUrl;
 
 	Register() {
 		super("Register");
@@ -42,6 +38,7 @@ class Register extends JFrame {
 		constructGraphicDetails();
 		setResizable(false);
 		setVisible(true);
+		baseUrl = RestServiceURL.getInstance().getBaseUrl();
 	}
 
 	private void constructGraphicDetails() {
@@ -158,26 +155,14 @@ class Register extends JFrame {
 			JOptionPane.showMessageDialog(this, "Passwords need to match\nPlease try again");
 		}
 		else {
-			ObjectNode objectNode = new ObjectMapper().createObjectNode();
-			objectNode.put("name", username);
-			objectNode.put("password", SecurePassword.sha256(password));
-			try {
-				ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-			    InputStream input = classloader.getResourceAsStream("config.properties");
-			    Properties properties = new Properties();
-				properties.load(input);
-				WebResource webResource = Client.create().resource(properties.getProperty("restAddress") + "/register");
-				ClientResponse response = webResource.accept("application/json").type("application/json").post(ClientResponse.class, objectNode.toString());
-				if (response.getStatus() == 200) {
-					JOptionPane.showMessageDialog(this, "Registration succeeded");
-					back();
-				}
-				else {
-					JOptionPane.showMessageDialog(this, "Username already exists\nPlease try again");
-				}
+			ObjectNode node = new ObjectMapper().createObjectNode().put("name", username).put("password", SecurePassword.sha256(password));
+			ClientResponse response = Client.create().resource(baseUrl + "/register").accept("application/json").type("application/json").post(ClientResponse.class, node.toString());
+			if (response.getStatus() == 200) {
+				JOptionPane.showMessageDialog(this, "Registration succeeded");
+				back();
 			}
-			catch (IOException e) {
-				e.printStackTrace();
+			else {
+				JOptionPane.showMessageDialog(this, "Username already exists\nPlease try again");
 			}
 		}
 	}
