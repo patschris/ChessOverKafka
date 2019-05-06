@@ -35,6 +35,7 @@ class Stats extends JFrame {
         this.chat_consumer = chat_consumer;
         setSize(700,300);
         setLayout(null);
+        baseUrl = RestServiceURL.getInstance().getBaseUrl();
         addTitle();
         addTabs();
         addButton();
@@ -48,7 +49,6 @@ class Stats extends JFrame {
         setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
         setResizable(false);
         setVisible(true);
-        baseUrl = RestServiceURL.getInstance().getBaseUrl();
     }
 
     private void addTitle(){
