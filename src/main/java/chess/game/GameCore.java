@@ -15,6 +15,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import chess.pieces.Piece;
 import chess.pieces.PieceColor;
+import gui.Chat;
 import kafka_consumer_producer.ConsumerCreator;
 import kafka_consumer_producer.Destination;
 import kafka_consumer_producer.ProducerCreator;
@@ -35,6 +36,7 @@ public class GameCore {
 	private static int winnermoves = 0;
 	private static String winner = "";
 	private static String winnerColor = "";
+	private static Chat chat;
 	Game game;
 
 	public GameCore(PieceColor pieceColor, Game game, String WwritesBreads, String BwritesWreads) {		
@@ -55,10 +57,10 @@ public class GameCore {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void startgame(String WwritesBreads, String BwritesWreads) throws InterruptedException {
+	public void startgame(String WwritesBreads, String BwritesWreads, Chat mychat) throws InterruptedException {
 
 
-
+		chat = mychat;
 		if(pieceColor.equals(PieceColor.BLACK)) {
 
 			boolean termination = false;
@@ -83,7 +85,7 @@ public class GameCore {
 						dest_str = (String) record.value();
 						if(dest_str.equals("Leaving the game")) {
 							JOptionPane.showMessageDialog(null, "Your opponent left the game! Exiting...");
-							
+							chat.setVisible(false);
 							game._gui.noVisible();
 							
 							black_consumer.commitAsync();
@@ -182,6 +184,7 @@ public class GameCore {
 			}
 			
 			logout(black);
+			chat.setVisible(false);
 			game._gui.noVisible();
 			consumeMessages(black_consumer);
 			black_consumer.close();
@@ -315,6 +318,7 @@ public class GameCore {
 			
 			
 			logout(white);
+			chat.setVisible(false);
 			game._gui.noVisible();
 			consumeMessages(white_consumer);
 			white_consumer.close();
@@ -328,6 +332,7 @@ public class GameCore {
 
 	public static void terminateGamefromX() {
 		System.out.println("Terminating the Game from X!!");
+		chat.setVisible(false);
 		if(pieceColor.equals(PieceColor.WHITE)) {
 			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(white , "Leaving the game");
 			white_producer.send(record);
@@ -357,7 +362,7 @@ public class GameCore {
 				continue;
 			}
 
-			for(ConsumerRecord<Long, String> record: consumerRecords) {
+			for (ConsumerRecord<Long, String> record: consumerRecords) {
 				System.out.println("Record Key " + record.key());
 				System.out.println("Record value " + record.value());
 				System.out.println("Record partition " + record.partition());

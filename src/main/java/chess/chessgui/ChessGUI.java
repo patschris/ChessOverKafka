@@ -34,10 +34,6 @@ public class ChessGUI extends TopLevel {
 				+ "Click a piece and then its destination to play! "
 				+ "WHITE's turn.", "turn",
 				new LayoutSpec("y", 1, "x", 0));
-
-
-		addMenuButton("Options->Stats", "stats");
-
 		
 		_display = new GameDisplay(game);
 		add(_display, new LayoutSpec("y", 2, "width", 2));

@@ -273,7 +273,7 @@ public class Table extends JFrame {
 				protected Void doInBackground() throws Exception {
 					Game g = new Game(PieceColor.BLACK,whoAmI, opponent);
 					GameCore gamec = new GameCore(PieceColor.BLACK, g, opponent, whoAmI);
-					gamec.startgame(opponent , whoAmI);
+					gamec.startgame(opponent , whoAmI, chat);
 					g._gui.frame.setVisible(false);
 					g._gui.frame.dispose();
 					chat.dispose();
@@ -381,7 +381,7 @@ public class Table extends JFrame {
 					chat_worker.execute();
 					
 					GameCore gamec = new GameCore(PieceColor.WHITE, g, whoAmI, opp);
-					gamec.startgame(whoAmI, opp);
+					gamec.startgame(whoAmI, opp, chat);
 					g._gui.frame.setVisible(false);
 					g._gui.frame.dispose();
 					chat.dispose();
