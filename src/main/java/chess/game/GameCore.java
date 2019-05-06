@@ -37,11 +37,20 @@ public class GameCore {
 	private static String winnerColor = "";
 	Game game;
 
-	public GameCore(PieceColor pieceColor, Game game, String WwritesBreads, String BwritesWreads) {		
+	public GameCore(PieceColor pieceColor, Game game, String WwritesBreads, String BwritesWreads,Consumer<Long, String> consumer) {		
 		GameCore.pieceColor = pieceColor;
 		this.game = game;
 		GameCore.white = WwritesBreads;
 		GameCore.black = BwritesWreads;
+		if(consumer.toString().equals(BwritesWreads)) {
+			white_consumer = consumer;	
+			consumeMessages(white_consumer);
+		}
+		else {
+			black_consumer = consumer;
+			consumeMessages(black_consumer);
+		}
+		
 	}
 
 	@SuppressWarnings("deprecation")
@@ -53,10 +62,9 @@ public class GameCore {
 
 			boolean termination = false;
 
-			GameCore.black_consumer = ConsumerCreator.createConsumer(WwritesBreads);
 			GameCore.black_producer = ProducerCreator.createProducer();
 
-			consumeMessages(black_consumer);
+			
 
 			//white's turn
 			game._gui.setMHturn();

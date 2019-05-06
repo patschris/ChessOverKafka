@@ -41,7 +41,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import chess.game.Game;
 import chess.game.GameCore;
 import chess.pieces.PieceColor;
-import kafka_consumer_producer.ConsumerCreator;
+//import kafka_consumer_producer.ConsumerCreator;
 import kafka_consumer_producer.ProducerCreator;
 import security.RestServiceURL;
 
@@ -62,9 +62,11 @@ public class Table extends JFrame {
 	private JButton submitButton;
 	private JButton refreshButton;
 	private JButton statsButton;
+	private Consumer<Long, String> consumer;
 
-	public Table(String userLoggedIn) {
+	public Table(String userLoggedIn, Consumer<Long, String> consumer) {
 		super("Table");
+		this.consumer = consumer;
 		whoAmI = userLoggedIn;
 		getBaseUrl();
 		setSize(700,300);
@@ -178,7 +180,7 @@ public class Table extends JFrame {
 		statsButton = new JButton("See stats");
 		statsButton.setSize(120, 30);
 		statsButton.setLocation(285, 180);
-		statsButton.addActionListener(event -> {dispose(); new Stats(whoAmI);});
+		statsButton.addActionListener(event -> {dispose(); new Stats(whoAmI, consumer);});
 		add(statsButton);
 		statsButton.setVisible(true);
 	}
@@ -250,12 +252,12 @@ public class Table extends JFrame {
 				@Override
 				protected Void doInBackground() throws Exception {
 					Game g = new Game(PieceColor.BLACK,whoAmI, opponent);
-					GameCore gamec = new GameCore(PieceColor.BLACK, g, opponent, whoAmI);
+					GameCore gamec = new GameCore(PieceColor.BLACK, g, opponent, whoAmI,consumer);
 					gamec.startgame(opponent , whoAmI);
 					g._gui.frame.setVisible(false);
 					g._gui.frame.dispose();
 					dispose();
-					new Table(whoAmI);
+					new Table(whoAmI, consumer);
 					return null;
 				}
 
@@ -296,9 +298,8 @@ public class Table extends JFrame {
 				protected Void doInBackground() throws InterruptedException {
 					addTopics();
 					
-					Consumer<Long, String> white_consumer = ConsumerCreator.createConsumer(whoAmI);
 					//consume any left messages
-					GameCore.consumeMessages(white_consumer);
+					GameCore.consumeMessages(consumer);
 
 					//create the white_consumer and wait for someone to join you
 					String msg = "";
@@ -307,7 +308,7 @@ public class Table extends JFrame {
 					System.out.println("Waiting For Message!");
 					while (true) {
 						@SuppressWarnings("deprecation")
-						ConsumerRecords<Long, String> consumerRecords = white_consumer.poll(10);
+						ConsumerRecords<Long, String> consumerRecords = consumer.poll(10);
 						if (consumerRecords.count() == 0) {
 							TimeUnit.SECONDS.sleep(1);
 							continue;
@@ -318,10 +319,9 @@ public class Table extends JFrame {
 							//JOptionPane.showMessageDialog(null, record.value());	
 						}
 						// commits the offset of record to broker.
-						white_consumer.commitAsync();
+						consumer.commitAsync();
 						break;
 					}
-					white_consumer.close();
 
 					setVisible(false);
 
@@ -335,12 +335,12 @@ public class Table extends JFrame {
 					createNewGameTable();
 					destroyMyTable();
 					Game g = new Game(PieceColor.WHITE, whoAmI, opponent);
-					GameCore gamec = new GameCore(PieceColor.WHITE, g, whoAmI, opponent);
+					GameCore gamec = new GameCore(PieceColor.WHITE, g, whoAmI, opponent, consumer);
 					gamec.startgame(whoAmI, opponent);
 					g._gui.frame.setVisible(false);
 					g._gui.frame.dispose();
 					dispose();
-					new Table(whoAmI);
+					new Table(whoAmI, consumer);
 					return null;
 				}
 

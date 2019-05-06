@@ -7,6 +7,9 @@ import structures.GlobalStats;
 import structures.PersonalStats;
 
 import javax.swing.*;
+
+import org.apache.kafka.clients.consumer.Consumer;
+
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -22,11 +25,13 @@ class Stats extends JFrame {
 	private String whoAmI;
     private String baseUrl;
     private DecimalFormat df = new DecimalFormat("#.#");
+    private Consumer<Long, String> consumer;
 
 
-    Stats(String user) {
+    Stats(String user, Consumer<Long, String> consumer) {
         super("Stats");
         whoAmI = user;
+        this.consumer = consumer;
         setSize(700,300);
         setLayout(null);
         getBaseUrl();
@@ -84,7 +89,7 @@ class Stats extends JFrame {
 
     private void closeFunction () {
         dispose();
-        new Table(whoAmI);
+        new Table(whoAmI, consumer);
     }
 
     private void getBaseUrl () {
