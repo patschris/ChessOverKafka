@@ -6,19 +6,13 @@ import com.sun.jersey.api.client.ClientResponse;
 import security.RestServiceURL;
 import structures.GlobalStats;
 import structures.PersonalStats;
-
 import javax.swing.*;
-
 import org.apache.kafka.clients.consumer.Consumer;
-
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Properties;
+
 
 class Stats extends JFrame {
 
