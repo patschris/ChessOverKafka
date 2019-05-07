@@ -15,10 +15,10 @@ import javax.swing.*;
 import chess.game.GameCore;
 
 public class TopLevel implements ActionListener {
-	private final HashMap<String, ButtonHandler> buttonMap = new HashMap<String, ButtonHandler>();
-	private final HashMap<String, ButtonGroup> buttonGroups = new HashMap<String, ButtonGroup>();
-	private final HashMap<String, JLabel> labelMap = new HashMap<String, JLabel>();
-	private static final HashMap<String, Integer> messageTypeMap = new HashMap<String, Integer>();
+	private final HashMap<String, ButtonHandler> buttonMap = new HashMap<>();
+	private final HashMap<String, ButtonGroup> buttonGroups = new HashMap<>();
+	private final HashMap<String, JLabel> labelMap = new HashMap<>();
+	private static final HashMap<String, Integer> messageTypeMap = new HashMap<>();
 	public final JFrame frame;
 
 	public void display(boolean visible) {

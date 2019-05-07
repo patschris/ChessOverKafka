@@ -54,30 +54,11 @@ public class ChessGUI extends TopLevel {
 		_display.setMouseHandler("press", this, "waitForYourTurn");
 	}
 
-	
-	/** Respond to the "New Game" button. 
-	 * */
-	/*public void newGame(String dummy) {
-        _game.newGame();
-        repaint(true);
-    }*/
-
 
 	public void waitForYourTurn(MouseEvent event) {
 		JOptionPane.showMessageDialog(null, "Wait for your opponent to make his move!");
 	}
 
-	public void stats(String dummy) {
-		System.out.println("stats");
-	}
-
-	/** Respond to the "Undo" button. */
-	/* public void undo(String dummy) {
-        _game.undoMove();
-        _game.setSelectedX(-1);
-        _game.setSelectedY(-1);
-        repaint(true);
-    }*/
 
 	/** Action in response to mouse-pressed event EVENT. */
 	public synchronized void mousePressed(MouseEvent event) {
@@ -126,30 +107,21 @@ public class ChessGUI extends TopLevel {
 					label = "STALEMATE, game ends in draw.";
 					_game.stalemate = 1;
 				}
-			} else {
+			}
+			else {
 				
 				label = _game.turn().string() + "'s turn.";
 			}
-
-
 			setLabel("turn", label);
-
 			_display.repaint();
-
 			return 1;
-
 		}
 		else {
 			label = "Invalid Move. " + _game.turn().string() + "'s turn.";
-
 			setLabel("turn", label);
-
 			_display.repaint();
-
 			return 0;
 		}
-
-
 	}
 
 	public int getInit_x() {
@@ -198,5 +170,4 @@ public class ChessGUI extends TopLevel {
 
 	/** The game being consulted. */
 	public final Game _game;
-
 }

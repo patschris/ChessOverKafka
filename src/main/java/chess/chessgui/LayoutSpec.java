@@ -9,8 +9,8 @@ import java.util.HashSet;
 
 public class LayoutSpec {
     final GridBagConstraints params = new GridBagConstraints();
-    private static final HashSet<String> allSpecs = new HashSet<String>(Arrays.asList("x", "y", "fill", "height", "ht", "width", "wid", "anchor", "weightx", "weighty", "ileft", "iright", "itop", "ibottom"));
-    private static final HashMap<Object, Integer> intNames = new HashMap<Object, Integer>();
+    private static final HashSet<String> allSpecs = new HashSet<>(Arrays.asList("x", "y", "fill", "height", "ht", "width", "wid", "anchor", "weightx", "weighty", "ileft", "iright", "itop", "ibottom"));
+    private static final HashMap<Object, Integer> intNames = new HashMap<>();
 
     public /* varargs */ LayoutSpec(Object ... specs) {
         this.params.weightx = 1.0;

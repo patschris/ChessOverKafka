@@ -84,5 +84,4 @@ public class GameDisplay extends Pad {
 
     /** The game this display is displaying. */
     private final Game _game;
-
 }

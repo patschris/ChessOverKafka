@@ -31,7 +31,7 @@ public class Game {
     /** A game of 2-player chess, displayed in a GUI. 
      * @throws InterruptedException */
     public Game(PieceColor pieceColor, String myself, String opponent) throws InterruptedException {
-        _moves = new ArrayList<Move>();
+        _moves = new ArrayList<>();
         _gui = new ChessGUI("Chess", this, pieceColor, myself, opponent);
         newGame(pieceColor);
     }
@@ -270,14 +270,12 @@ public class Game {
     private int _selectedY;
     
     public int checkGameOver() {
-
 		if(checkmatewhite==1 || checkmateblack ==1 || stalemate ==1) {
     		return 1;
     	}
     	else {
     		return 0;
     	}
-    	
     }
     
 }

@@ -15,7 +15,7 @@ import javax.swing.JComponent;
 
 
 public class Pad extends Widget {
-    private final HashMap<String, Handler> eventMap = new HashMap<String, Handler>();
+    private final HashMap<String, Handler> eventMap = new HashMap<>();
     private static final String[] eventNames = new String[]{"press", "release", "click", "enter", "exit", "drag", "move"};
     private Dimension minimumSize;
     private Dimension preferredSize;
@@ -27,10 +27,6 @@ public class Pad extends Widget {
             this.eventMap.put(event, null);
         }
     }
-
-    /*protected void setSize(int width, int height) {
-        this.me.setSize(width, height);
-    }*/
 
     protected void setPreferredSize(int width, int height) {
         this.preferredSize = new Dimension(width, height);
@@ -73,10 +69,6 @@ public class Pad extends Widget {
         }
     }
 
-    /*protected void setMouseHandler(String event, String funcName) {
-        this.setMouseHandler(event, this, funcName);
-    }*/
-
     protected void paintComponent(Graphics2D g) {
     }
 
@@ -104,7 +96,8 @@ public class Pad extends Widget {
             this.receiver = receiver;
             if (funcName == null) {
                 this.func = null;
-            } else {
+            }
+            else {
                 try {
                     this.func = receiver.getClass().getDeclaredMethod(funcName, MouseEvent.class);
                     this.func.setAccessible(true);
@@ -178,5 +171,4 @@ public class Pad extends Widget {
             return Pad.this.maximumSize;
         }
     }
-
 }

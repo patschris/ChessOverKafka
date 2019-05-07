@@ -37,7 +37,7 @@ public class GameCore {
 	private static String winner = "";
 	private static String winnerColor = "";
 	private static Chat chat;
-	Game game;
+	static Game game;
 
 	public GameCore(PieceColor pieceColor, Game game, String WwritesBreads, String BwritesWreads) {		
 		GameCore.pieceColor = pieceColor;
@@ -58,11 +58,8 @@ public class GameCore {
 
 	@SuppressWarnings("deprecation")
 	public void startgame(String WwritesBreads, String BwritesWreads, Chat mychat) throws InterruptedException {
-
-
 		chat = mychat;
 		if(pieceColor.equals(PieceColor.BLACK)) {
-
 			boolean termination = false;
 
 			//white's turn
@@ -82,7 +79,7 @@ public class GameCore {
 					System.out.println("Black is reading from : " + WwritesBreads);
 
 					for(ConsumerRecord<Long, String> record: consumerRecords) {
-						dest_str = (String) record.value();
+						dest_str = record.value();
 						if(dest_str.equals("Leaving the game")) {
 							JOptionPane.showMessageDialog(null, "Your opponent left the game! Exiting...");
 							chat.setVisible(false);
@@ -102,20 +99,15 @@ public class GameCore {
 							break;
 						}
 						System.out.println(dest_str);
-						//JOptionPane.showMessageDialog(null, record.value());	
 					}
 
-					if(!termination) {
-						// commits the offset of record to broker.
-						black_consumer.commitAsync();
-						//black_consumer.close();
-					}
+					// commits the offset of record to broker.
+					if(!termination) black_consumer.commitAsync();
+
 					break;
 				}
 
-				if (termination) {
-					break;
-				}
+				if (termination) break;
 
 				Gson gson = new Gson();
 				Destination dest = gson.fromJson(dest_str, Destination.class);
@@ -134,16 +126,10 @@ public class GameCore {
 				while(true) {
 					Thread.sleep(30);
 					//try to send message to black consumer
-					if(game._gui.getFlag() != 1) {
-						//System.out.println(game._gui.getFlag());
-						continue;
-					}
-					else {
-						Destination dest2 = new Destination(game._gui.getInit_x(), game._gui.getInit_y(), game._gui.getReleasedX() , game._gui.getReleasedY());
-						String dest_str2 = gson.toJson(dest2);
+					if(game._gui.getFlag() == 1)  {
+						String dest_str2 = gson.toJson( new Destination(game._gui.getInit_x(), game._gui.getInit_y(), game._gui.getReleasedX() , game._gui.getReleasedY()));
 						System.out.println("Black is writting in : " + BwritesWreads);
-						ProducerRecord<Long, String> record2 = new ProducerRecord<Long, String>(BwritesWreads , dest_str2);
-						black_producer.send(record2);	
+						black_producer.send(new ProducerRecord<Long, String>(BwritesWreads , dest_str2));
 						game._gui.setFlag(0);
 						break;
 					}
@@ -205,7 +191,6 @@ public class GameCore {
 					Thread.sleep(30);
 					//try to send message to black consumer
 					if(game._gui.getFlag() != 1) {
-						//System.out.println(game._gui.getFlag());
 						continue;
 					}
 					else {
@@ -236,7 +221,6 @@ public class GameCore {
 					ConsumerRecords<Long, String> consumerRecords2 = white_consumer.poll(1);
 					if (consumerRecords2.count() == 0) { 
 						Thread.sleep(30);
-						//System.out.println("NO message... trying to read from..." + BwritesWreads);
 						continue;
 					}
 					System.out.println("White is reading from : " + BwritesWreads);
@@ -246,7 +230,7 @@ public class GameCore {
 							JOptionPane.showMessageDialog(null, "Your opponent left the game! Exiting...");
 							
 							game._gui.noVisible();
-							
+							chat.setVisible(false);
 							white_consumer.commitAsync();
 
 							winnermoves = 0;
@@ -263,10 +247,7 @@ public class GameCore {
 						}
 						blackmoves = blackmoves + 1;
 						System.out.println(dest_str2); 
-						//JOptionPane.showMessageDialog(null, record.value());	
 					}
-
-
 
 					// commits the offset of record to broker.
 					if(!termination) {
@@ -311,30 +292,24 @@ public class GameCore {
 				else {
 					JOptionPane.showMessageDialog(null, "Game Over, the game ends in draw!!");
 				}
-				
 				sendStats();
-				
 			}
-			
-			
-			logout(white);
 			chat.setVisible(false);
 			game._gui.noVisible();
+			logout(white);
 			consumeMessages(white_consumer);
 			white_consumer.close();
 			white_producer.close();
-			
 		}
-		
-
-
 	}
+
 
 	public static void terminateGamefromX() {
 		System.out.println("Terminating the Game from X!!");
 		chat.setVisible(false);
+		game._gui.noVisible();
 		if(pieceColor.equals(PieceColor.WHITE)) {
-			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(white , "Leaving the game");
+			ProducerRecord<Long, String> record = new ProducerRecord<>(white , "Leaving the game");
 			white_producer.send(record);
 			white_producer.close();
 			consumeMessages(white_consumer);
@@ -342,7 +317,7 @@ public class GameCore {
 			logout(white);
 		}
 		else{
-			ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(black , "Leaving the game");
+			ProducerRecord<Long, String> record = new ProducerRecord<>(black , "Leaving the game");
 			black_producer.send(record);
 			black_producer.close();
 			consumeMessages(black_consumer);
