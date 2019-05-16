@@ -19,7 +19,7 @@ public class RestServiceURL {
 
     private static String computeBaseUrl () {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        InputStream input = classloader.getResourceAsStream("config.properties");
+        InputStream input = classloader.getResourceAsStream("chess/configurations/config.properties");
         Properties properties = new Properties();
         try {
             properties.load(input);
