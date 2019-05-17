@@ -7,4 +7,6 @@ play with an other user. Uses [Apache Kafka](https://kafka.apache.org/) to send 
 [chess-ws](https://github.com/Thanoschal/chess-ws) to support the game. The server project chess-ws is running using 
 [Apache Tomcat](http://tomcat.apache.org/) and it's connected with a [MySQL](https://www.mysql.com/) database. We access and manage the
 database using [phpmyadmin](https://www.phpmyadmin.net/). The Kafka server, the Apache Tomcat and the MySQL database are installed at the 
-same VM with a static IP. <br/> <br/> ![image](https://github.com/patschris/ChessOverKafka/blob/master/AppAchitecture.png)
+same VM with a static IP. <br/>
+**Important Note**: The Kafka server, the Apache Tomcat and the MySQL database must be installed in the same machine. In order to run the app, you must replace the x.x.x.x at the config.properties and KafkaContants.java files with the IP of the aforementioned machine.
+<br/> <br/> ![image](https://github.com/patschris/ChessOverKafka/blob/master/AppAchitecture.png)
