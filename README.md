@@ -1,12 +1,6 @@
 # Chess game over Kafka
-
-A chess game based on the public project [2P-Chess](https://github.com/wanfungchui/2P-Chess). The two opponents can play remotely using 
-different instances of the game. After a user logs in, he can either create a table and wait for an opponent or join an existing table and 
-play with an other user. Uses [Apache Kafka](https://kafka.apache.org/) to send moves and chat messages between the two players. Uses 
-[RESTful web services](https://javaee.github.io/tutorial/jaxrs001.html) located at the project 
-[chess-ws](https://github.com/Thanoschal/chess-ws) to support the game. The server project chess-ws is running using 
-[Apache Tomcat](http://tomcat.apache.org/) and it's connected with a [MySQL](https://www.mysql.com/) database. We access and manage the
-database using [phpmyadmin](https://www.phpmyadmin.net/). The Kafka server, the Apache Tomcat and the MySQL database are installed at the 
-same VM with a static IP. <br/>
-**Important Note**: The Kafka server, the Apache Tomcat and the MySQL database must be installed in the same machine. In order to run the app, you must replace the x.x.x.x at the config.properties and KafkaContants.java files with the IP of the aforementioned machine.
-<br/> <br/> ![image](https://github.com/patschris/ChessOverKafka/blob/master/AppAchitecture.png)
+<p align="justify">
+A chess game based on the public project <a href="https://github.com/wanfungchui/2P-Chess">2P-Chess</a>. The two opponents can play remotely using different instances of the game. After a user logs in, he can either create a table and wait for an opponent or join an existing table and play with an other user. Uses <a href="https://kafka.apache.org">Apache Kafka</a> to send moves and chat messages between the two players. Uses <a href="https://javaee.github.io/tutorial/jaxrs001.html">RESTful web services</a> located at the project <a href="https://github.com/Thanoschal/chess-ws">chess-ws</a> to support the game. The server project chess-ws is running using <a href="http://tomcat.apache.org/">Apache Tomcat</a> and it's connected with a <a href="https://www.mysql.com/">MySQL</a> database. We access and manage the database using <a href="https://www.phpmyadmin.net/">phpmyadmin</a>. The Kafka server, the Apache Tomcat and the MySQL database are installed at the same VM with a static IP. <br/>
+<b>Important Note</b>: The Kafka server, the Apache Tomcat and the MySQL database must be installed in the same machine. In order to run the app, you must replace the x.x.x.x at the config.properties and KafkaContants.java files with the IP of the aforementioned machine.
+<br/> <br/> <img src="https://github.com/patschris/ChessOverKafka/blob/master/AppAchitecture.png">
+</p>
